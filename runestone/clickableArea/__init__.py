@@ -33,15 +33,10 @@ def setup(app):
 
 TEMPLATE = """
 <pre data-component="clickablearea" id="%(divid)s">
-<span data-question>%(question)s</span>%(feedback)sdef main():
-	<span data-incorrect>print("Hello world")</span>
-	<span data-correct>x = 4</span>
-	for i in range(5):
-		<span data-correct>y = i</span>
-		print(y)
-	<span data-incorrect>return 0</span>
-	</pre>
+<span data-question>%(question)s</span>%(feedback)s%(clickcode)s
+</pre>
 """
+
 
 class ClickableAreaNode(nodes.General, nodes.Element):
     def __init__(self,content):
@@ -71,12 +66,7 @@ def visit_ca_node(self,node):
     self.body.append(res)
 
 def depart_ca_node(self,node):
-    ''' This is called at the start of processing an clickablearea node.  If clickablearea had recursive nodes
-        etc and did not want to do all of the processing in visit_ca_node any finishing touches could be
-        added here.
-    '''
     pass
-
 
 
 class ClickableArea(Directive):
@@ -99,4 +89,16 @@ class ClickableArea(Directive):
         """
         self.options['divid'] = self.arguments[0]
 
-        return [ClickableAreaNode(self.options)]
+        if self.content:
+            source = "\n".join(self.content)
+        else:
+            source = '\n'
+        source = source.replace(":click-correct:", "<span data-correct>")
+        source = source.replace(":click-incorrect:", "<span data-incorrect>")
+        source = source.replace(":end:", "</span>")
+        self.options['clickcode'] = source
+
+        clickNode = ClickableAreaNode(self.options)
+        clickNode.template_start = TEMPLATE
+
+        return [clickNode]
