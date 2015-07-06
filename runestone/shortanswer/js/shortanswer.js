@@ -34,7 +34,6 @@ ShortAnswer.prototype = new RunestoneBase();
 == Initialize basic ShortAnswer attributes ==
 ========================================*/
 ShortAnswer.prototype.init = function (opts) {
-    console.log("here");
     RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <p> element that will be replaced by new HTML
     this.origElem = orig;
