@@ -70,7 +70,6 @@ ClickableArea.prototype.getFeedback = function () {
         $(this.feedback).remove();
         this.feedback = this.feedback.innerHTML;
     }
-    console.log(this.feedback);
 };
 
 /*============================================

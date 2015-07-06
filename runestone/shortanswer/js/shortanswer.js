@@ -34,10 +34,12 @@ ShortAnswer.prototype = new RunestoneBase();
 == Initialize basic ShortAnswer attributes ==
 ========================================*/
 ShortAnswer.prototype.init = function (opts) {
+    console.log("here");
     RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <p> element that will be replaced by new HTML
     this.origElem = orig;
     this.divid = orig.id;
+    this.question = this.origElem.innerHTML;
 
     this.optional = false;
     if ($(this.origElem).is("[data-optional]")) {
@@ -45,6 +47,7 @@ ShortAnswer.prototype.init = function (opts) {
     }
 
     this.renderHTML();
+    this.loadJournal();
 };
 
 ShortAnswer.prototype.renderHTML = function() {
@@ -63,12 +66,94 @@ ShortAnswer.prototype.renderHTML = function() {
     this.containerDiv.appendChild(this.newForm);
 
     this.fieldSet = document.createElement("fieldset");
+    this.newForm.appendChild(this.fieldSet);
 
     this.legend = document.createElement("legend");
     this.legend.innerHTML = "Short Answer";
+    this.fieldSet.appendChild(this.legend);
 
     this.firstLegendDiv = document.createElement("div");
+    this.firstLegendDiv.innerHTML = this.question;
+    $(this.firstLegendDiv).addClass("journal-question");
+    this.fieldSet.appendChild(this.firstLegendDiv);
 
+    this.jInputDiv = document.createElement("div");
+    this.jInputDiv.id = this.divid + "_journal_input";
+    this.fieldSet.appendChild(this.jInputDiv);
+
+    this.jOptionsDiv = document.createElement("div");
+    $(this.jOptionsDiv).addClass("journal-options");
+    this.jInputDiv.appendChild(this.jOptionsDiv);
+
+    this.jLabel = document.createElement("label");
+    $(this.jLabel).addClass("radio-inline");
+    this.jOptionsDiv.appendChild(this.jLabel);
+
+    this.jTextArea = document.createElement("textarea");
+    this.jTextArea.id = this.divid + "_solution";
+    $(this.jTextArea).css("display:inline, width:530px");
+    $(this.jTextArea).addClass("form-control");
+    this.jTextArea.rows = 4;
+    this.jTextArea.cols = 50;
+    this.jLabel.appendChild(this.jTextArea);
+
+    this.fieldSet.appendChild(document.createElement("br"));
+
+    this.buttonDiv = document.createElement("div");
+    this.fieldSet.appendChild(this.buttonDiv);
+
+    this.submitButton = document.createElement("button");
+    $(this.submitButton).addClass("btn btn-default");
+    this.submitButton.textContent = "Save";
+    this.submitButton.onclick = function () {
+        this.submitJournal();
+    }.bind(this);
+    this.buttonDiv.appendChild(this.submitButton);
+
+    this.randomSpan = document.createElement("span");
+    this.randomSpan.innerHTML = "Instructor's Feedback";
+    this.fieldSet.appendChild(this.randomSpan);
+
+    this.otherOptionsDiv = document.createElement("div");
+    $(this.otherOptionsDiv).css("padding-left:20px");
+    $(this.otherOptionsDiv).addClass("journal-options");
+    this.fieldSet.appendChild(this.otherOptionsDiv);
+
+    this.feedbackDiv = document.createElement("div");
+    $(this.feedbackDiv).addClass("bg-info form-control");
+    $(this.feedbackDiv).css("width:530px, background-color:#eee, font-style:italic");
+    this.feedbackDiv.id = this.divid + "_feedback";
+    this.feedbackDiv.innerHTML = "There is no feedback yet.";
+    this.otherOptionsDiv.appendChild(this.feedbackDiv);
+
+    this.fieldSet.appendChild(document.createElement("br"));
+
+    $(this.origElem).replaceWith(this.containerDiv);
+};
+
+ShortAnswer.prototype.submitJournal = function () {
+    var value = $("#"+this.divid+"_solution").val();
+    localStorage.setItem(this.divid, value);
+    /*
+    directiveRemoteCommand("set_journal_entry",  this.divid, {"solution": value},
+                      function(data) {
+                        storage.remove(this.divid);
+                      },
+                      function(data) {
+                        console.log(data.message);
+                      });  */
+    logBookEvent({"event": "shortanswer", "act": JSON.stringify(value), "div_id": this.divid});
+};
+
+ShortAnswer.prototype.loadJournal = function () {
+    var len = localStorage.length;
+    if (len > 0) {
+        var ex = localStorage.getItem(this.divid);
+        if (ex !== null) {
+            var solution = $("#" + this.divid + "_solution");
+            solution.text(localStorage.getItem(this.divid));
+        }
+    }
 };
 
 /*

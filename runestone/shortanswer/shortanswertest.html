@@ -4,15 +4,26 @@
 <head lang="en">
 	<meta charset="UTF-8">
     <title>Short answer test</title>
-	<link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.css"/>
-	<link rel="stylesheet" href="bootstrap.min.css"/>
-	<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
-	<script type="text/javascript" src="bower_components/jquery-ui/jquery-ui.js"></script>
+	<link rel="stylesheet" href="../assess/bower_components/jquery-ui/themes/base/jquery-ui.css"/>
+	<link rel="stylesheet" href="../assess/testPages/bootstrap.min.css"/>
+	<script type="text/javascript" src="../assess/bower_components/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src="../assess/bower_components/jquery-ui/jquery-ui.js"></script>
 	<script type="text/javascript" src="../globalJS/runestoneBase.js"></script>
 	<script type="text/javascript" src="http://interactivepython.org/runestone/static/thinkcspy/_static/bookfuncs.js"></script>
 	<script type="text/javascript" src="http://www.interactivepython.org/runestone/static/thinkcspy/_static/bootstrap-3.0.0/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="datafile.js"></script>
-	<script type="text/javascript" src="../assess/js/timedAssess.js"></script>
+	<script type="text/javascript" src="js/shortanswer.js"></script>
+
+	<script type="text/javascript">
+		eBookConfig = {};
+		eBookConfig.host = 'http://interactivepython.org' ? 'http://interactivepython.org' : 'http://127.0.0.1:8000';
+		eBookConfig.app = eBookConfig.host+'/runestone';
+		eBookConfig.ajaxURL = eBookConfig.app+'/ajax/';
+		eBookConfig.course = 'thinkcspy';
+		eBookConfig.logLevel = 10;
+		eBookConfig.loginRequired = false
+		eBookConfig.build_info = "3.1.1";
+		eBookConfig.isLoggedIn = false;
+	</script>
 
 
 </head>
