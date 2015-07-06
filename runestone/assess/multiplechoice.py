@@ -155,6 +155,7 @@ class MChoice(Assessment):
         #self.state.nested_parse(self.content, self.content_offset, mcNode)
         return [mcNode]
 
+#backwards compatibility
 class MChoiceMF(MChoice):
     def run(self):
         print("This directive has been depreciated. Please convert to the new directive 'mchoice'")
