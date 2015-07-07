@@ -1,0 +1,47 @@
+.draggable {
+    padding-left: 0px;
+    margin-left: 2%;
+    display:inline-block;
+	text-align: left;
+	vertical-align: top;
+}
+.sortable-code div {
+    font-size: 120%;
+    font-family: monospace;
+    list-style: none;
+    background-color: #efefff;
+    padding-bottom: 10px;
+    padding-left: 0;
+    margin-left: 0;
+    border: 1px solid #efefff;;
+}
+ul.output {
+    background-color: #FFA;
+}
+.draggable span {
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    min-width: 250pt;
+    border-radius: 10px;
+    background-color:#EFEFEF;
+    border:1px solid lightgray;
+    padding:10px;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: move;
+}
+.sortable-code span:hover {
+    overflow: visible;
+}
+
+.sortable-code-container {
+    text-align:center;
+}
+
+.parsons-controls{
+	max-width: 500pt;
+	margin-left: auto;
+	margin-right: auto;
+	text-align:center;
+}
