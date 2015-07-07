@@ -630,9 +630,13 @@ MultipleChoice.prototype.renderMCFormButtons = function () {
             _this.processMCMASubmission();
         };
     } else {
+        console.log("else")
         this.submitButton.onclick = function () {
+            console.log("click");
             _this.processMCMFSubmission();
         };
+        console.log(this.submitButton);
+        console.log("hello");
     } // end else
     this.optsForm.appendChild(this.submitButton);
 
