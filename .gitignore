@@ -19,7 +19,7 @@ __pycache__
 _deploy
 conf.py
 rb.s
-
+test/
 # Installer logs
 pip-log.txt
 

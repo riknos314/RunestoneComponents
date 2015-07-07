@@ -47,8 +47,6 @@ DragNDrop.prototype.init = function (opts) {
     this.draggableArray = [];
     this.dropZoneArray = [];
     this.populateArrays();
-    console.log(this.draggableArray);
-    console.log(this.dropZoneArray);
 
     this.question = null;
     this.getQuestion();
@@ -80,28 +78,67 @@ DragNDrop.prototype.createNewElements = function () {
 
     this.draggableDiv = document.createElement("div");
     //CSS style it to left
-    $(this.draggableDiv).addClass("draggable");
+    $(this.draggableDiv).addClass("draggable dragzone");
+
     this.dropZoneDiv = document.createElement("div");
     //CSS style it to right
-    this.dropZoneDiv.style.display = "inline-block";
+    $(this.dropZoneDiv).addClass("draggable");
     this.containerDiv.appendChild(this.draggableDiv);
     this.containerDiv.appendChild(this.dropZoneDiv);
 
+    this.setReplacementSpans();
+
+    $(this.origElem).replaceWith(this.containerDiv);
+};
+
+DragNDrop.prototype.setReplacementSpans = function () {
     for (var i = 0; i < this.draggableArray.length; i++) {
         var replaceSpan = document.createElement("span");
         replaceSpan.innerHTML = this.draggableArray[i].innerHTML;
         replaceSpan.id = this.draggableArray[i].id;
-        replaceSpan.style.display = "block";
-        //CSS styling
+        $(replaceSpan).attr("draggable","true");
+
         var otherReplaceSpan = document.createElement("span");
+
         otherReplaceSpan.innerHTML = this.dropZoneArray[i].innerHTML;
+        $(otherReplaceSpan).addClass("dropzone");
         otherReplaceSpan.id = this.dropZoneArray[i].id;
-        otherReplaceSpan.style.display = "block";
+
+        this.setEventListeners(replaceSpan, otherReplaceSpan);
 
         this.draggableDiv.appendChild(replaceSpan);
         this.dropZoneDiv.appendChild(otherReplaceSpan);
+        //this.dropZoneDiv.appendChild(document.createElement("br"));
     }
-    $(this.origElem).replaceWith(this.containerDiv);
+};
+
+DragNDrop.prototype.setEventListeners = function (dgSpan, dpSpan) {
+    dgSpan.addEventListener("dragstart", function (ev) {
+        ev.dataTransfer.setData("asdf", ev.target.id);
+    });
+    dgSpan.addEventListener("dragover", function (ev) {
+        ev.preventDefault();
+    });
+    dgSpan.addEventListener("drop", function (ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("asdf");
+        var draggedSpan = document.getElementById(data);
+        if ($(this.draggableDiv).has(draggedSpan).context != draggedSpan) {  // Make sure element isn't already there--prevents erros w/appending child
+            this.draggableDiv.appendChild(draggedSpan);
+        }
+    }.bind(this));
+
+    dpSpan.addEventListener("dragover", function (ev) {
+        ev.preventDefault();
+    });
+    dpSpan.addEventListener("drop", function (ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("asdf");
+        var draggedSpan = document.getElementById(data);
+        if ($(ev.target).has(draggedSpan).context != draggedSpan && $(ev.target).hasClass("dropzone")) {  // Make sure element isn't already there--prevents erros w/appending child
+            ev.target.appendChild(draggedSpan);
+        }
+    });
 };
 /*=================================
 == Find the custom HTML tags and ==

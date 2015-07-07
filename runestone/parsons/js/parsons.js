@@ -47,7 +47,6 @@ Parsons.prototype.init = function (opts) {
 
     this.getQuestion();
     this.populateContentArray();
-    console.log(this.contentArray);
     this.createParsonsView();
 };
 

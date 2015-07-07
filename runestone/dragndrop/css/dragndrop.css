@@ -23,6 +23,7 @@ ul.output {
     -webkit-border-radius:10px;
     min-width: 250pt;
     border-radius: 10px;
+    display: block;
     background-color:#EFEFEF;
     border:1px solid lightgray;
     padding:10px;
@@ -31,6 +32,7 @@ ul.output {
     overflow: hidden;
     cursor: move;
 }
+
 .sortable-code span:hover {
     overflow: visible;
 }
