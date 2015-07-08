@@ -177,14 +177,19 @@ ClickableArea.prototype.clickableEval = function () {
     // Evaluation is done by iterating over the correct/incorrect arrays and checking by class
     this.setLocalStorage();
     this.correct = true;
+    this.correctNum = 0;
+    this.incorrectNum = 0;
     for (var i = 0; i < this.correctArray.length; i++) {
         if (!$(this.correctArray[i]).hasClass("clickable-clicked")) {
             this.correct = false;
+        } else {
+            this.correctNum++;
         }
     }
     for (var i = 0; i < this.incorrectArray.length; i++) {
         if ($(this.incorrectArray[i]).hasClass("clickable-clicked")) {
             this.correct = false;
+            this.incorrectNum++;
         }
     }
 
@@ -209,7 +214,7 @@ ClickableArea.prototype.renderFeedback = function () {
         $(this.feedBackDiv).attr("class", "alert alert-success");
 
     } else {
-        $(this.feedBackDiv).html("Incorrect.    " + this.feedback);
+        $(this.feedBackDiv).html("Incorrect. You clicked on " + this.correctNum + " of the " + this.correctArray.length.toString() + " correct elements and " + this.incorrectNum + " of the " + this.incorrectArray.length.toString() + " incorrect elements. " + this.feedback);
 
         $(this.feedBackDiv).attr("class", "alert alert-danger");
     }
