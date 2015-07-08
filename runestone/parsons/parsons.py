@@ -61,8 +61,6 @@ class ParsonsNode(nodes.General, nodes.Element):
 def visit_prs_node(self,node):
     res = TEMPLATE % node.prs_options
 
-    res = res.replace("u'","'")  # hack:  there must be a better way to include the list and avoid unicode strings
-
     self.body.append(res)
 
 def depart_prs_node(self,node):
