@@ -11,20 +11,6 @@
 ===                6/4/15                ===
 ==========================================*/
 
-// start with basic parent stuff
-
-function RunestoneBase () {    // Parent function
-
-}
-
-RunestoneBase.prototype.logBookEvent = function (info) {
-    console.log("logging event " + this.divid);
-};
-
-RunestoneBase.prototype.logRunEvent = function (info) {
-    console.log("running " + this.divid);
-};
-
 /*=======================================
 ===         Global functions          ===
 === (used by more than one component) ===
@@ -73,10 +59,8 @@ function FITB (opts) {
 /*===================================
 ===    Setting FITB variables     ===
 ===================================*/
-FITB.prototype = new RunestoneBase();
 
 FITB.prototype.init = function (opts) {
-    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <p> element
     this.origElem = orig;
     this.divid = orig.id;
@@ -416,14 +400,12 @@ function MultipleChoice (opts) {
         this.init(opts);
     }
 }
-MultipleChoice.prototype = new RunestoneBase();
 
 /*===================================
 ===     Setting MC variables      ===
 ===================================*/
 
 MultipleChoice.prototype.init = function (opts) {
-    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <ul> element
     this.origElem = orig;
 
@@ -1001,14 +983,12 @@ function Timed (opts) {
     }
 }
 
-Timed.prototype = new RunestoneBase();
 
 /*====================================
 === Setting Timed Assess Variables ===
 ====================================*/
 
 Timed.prototype.init = function (opts) {
-    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;
     this.origElem = orig; // the entire element of this timed assessment and all it"s children
     this.divid = orig.id;
@@ -1018,6 +998,7 @@ Timed.prototype.init = function (opts) {
     this.limitedTime = false;
     if (!isNaN($(this.origElem).data("time"))) {
         this.timeLimit = parseInt($(this.origElem).data("time"), 10) * 60; // time in seconds to complete the exam
+        this.startingTime = this.timeLimit;
         this.limitedTime = true;
     }
     this.showFeedback = true;
@@ -1198,9 +1179,8 @@ Timed.prototype.startAssessment = function () {
             _this.running = 1;
             $(this.timedDiv).show();
             _this.increment();
-            var name = _this.getPageName();
-            logBookEvent({"event": "timedExam", "act": "start", "div_id": name});
-            localStorage.setItem(eBookConfig.email + ":timedExam:" + name, "started");
+            logBookEvent({"event": "timedExam", "act": "start", "div_id": this.divid});
+            localStorage.setItem(eBookConfig.email + ":" + this.divid, "started");
         }
     } else {
         $(this.startBtn).attr("disabled", true);
@@ -1327,10 +1307,9 @@ Timed.prototype.tookTimedExam = function () {
     });
 
     var len = localStorage.length;
-    var pageName = this.getPageName();
     var _this = this;
     if (len > 0) {
-        if (localStorage.getItem(eBookConfig.email + ":timedExam:" + pageName) !== null) {
+        if (localStorage.getItem(eBookConfig.email + ":" + this.divid) !== null) {
             _this.taken = 1;
 
         }else {
@@ -1341,13 +1320,8 @@ Timed.prototype.tookTimedExam = function () {
     }
 };
 
-Timed.prototype.getPageName = function () {
-    var pageName = window.location.pathname.split("/").slice(-1);
-    var name = pageName[0];
-    return name;
-};
-
 Timed.prototype.finishAssessment = function () {
+    this.findTimeTaken();
     this.timeLimit = 0;
     this.running = 0;
     this.done = 1;
@@ -1355,6 +1329,8 @@ Timed.prototype.finishAssessment = function () {
     this.submitTimedProblems();
     this.checkScore();
     this.displayScore();
+    this.storeScore();
+    this.logScore();
     $(this.pauseBtn).attr("disabled", true);
     this.finishButton.disabled = true;
 };
@@ -1424,6 +1400,24 @@ Timed.prototype.checkScore = function () {
             this.incorrect++;
         }
     }
+};
+
+Timed.prototype.findTimeTaken = function () {
+    if (this.limitedTime) {
+        this.timeTaken = this.startingTime - this.timeLimit;
+    } else {
+        this.timeTaken = this.timeLimit;
+    }
+};
+
+Timed.prototype.storeScore = function () {
+    var storage_arr = [];
+    storage_arr.push(this.score, this.incorrect, this.skipped, this.timeTaken);
+    localStorage.setItem(eBookConfig.email + ":" + this.divid, storage_arr.join(";"));
+};
+
+Timed.prototype.logScore = function () {
+    logBookEvent({"event": "timedExam", "act": "finish", "div_id": this.divid, "correct": this.score, "incorrect": this.incorrect, "skipped": this.skipped, "time": this.timeTaken});
 };
 
 Timed.prototype.displayScore = function () {
