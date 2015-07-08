@@ -1,5 +1,6 @@
 .draggable {
     margin-left: 2%;
+    margin-top: 5px;
     display:inline-block;
 	text-align: left;
 	vertical-align: top;
@@ -8,13 +9,22 @@
     font-size: 120%;
     padding-bottom: 10px;
     min-width: 35%;
-    min-height:59%;
     border: 1px solid #efefff;;
+    box-sizing: border-box;
 }
 .drag-button {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    display: inline-block;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 10px;
+}
+.drag-reset {
+    background-color: #474949;
+    color: white;
+}
+.drag-reset:hover {
+    background-color: black;
+    color: white;
 }
 .draggable-drag {
     -moz-border-radius:10px;
@@ -48,6 +58,6 @@
     white-space: nowrap;
     overflow: hidden;
 }
-.sortable-code-container {
+.draggable-container {
     text-align:center;
 }
