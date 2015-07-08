@@ -19,11 +19,14 @@ __author__ = 'isaiahmayerchak'
 from docutils import nodes
 from docutils.parsers.rst import directives
 from docutils.parsers.rst import Directive
+from .clickerroles import *
 
 def setup(app):
     app.add_directive('clickablearea',ClickableArea)
     app.add_javascript('clickable.js')
     app.add_stylesheet('clickable.css')
+    app.add_role('click-correct', clickcorrect)
+    app.add_role('click-incorrect', clickincorrect)
 
     app.add_node(ClickableAreaNode, html=(visit_ca_node, depart_ca_node))
 
@@ -58,6 +61,8 @@ def visit_ca_node(self,node):
 
     res = res % node.ca_options
 
+    res = res.replace("u'","'")  # hack:  there must be a better way to include the list and avoid unicode strings
+
     self.body.append(res)
 
 def depart_ca_node(self,node):
@@ -90,7 +95,7 @@ class ClickableArea(Directive):
             source = '\n'
         source = source.replace(":click-correct:", "<span data-correct>")
         source = source.replace(":click-incorrect:", "<span data-incorrect>")
-        source = source.replace(":endclick:", "</span>")
+        source = source.replace(":end:", "</span>")
         self.options['clickcode'] = source
 
         clickNode = ClickableAreaNode(self.options)
