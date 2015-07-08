@@ -11,20 +11,6 @@
 ===                6/4/15                ===
 ==========================================*/
 
-// start with basic parent stuff
-
-function RunestoneBase () {    // Parent function
-
-}
-
-RunestoneBase.prototype.logBookEvent = function (info) {
-    console.log("logging event " + this.divid);
-};
-
-RunestoneBase.prototype.logRunEvent = function (info) {
-    console.log("running " + this.divid);
-};
-
 /*=======================================
 ===         Global functions          ===
 === (used by more than one component) ===
@@ -73,10 +59,8 @@ function FITB (opts) {
 /*===================================
 ===    Setting FITB variables     ===
 ===================================*/
-FITB.prototype = new RunestoneBase();
 
 FITB.prototype.init = function (opts) {
-    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <p> element
     this.origElem = orig;
     this.divid = orig.id;
@@ -416,14 +400,12 @@ function MultipleChoice (opts) {
         this.init(opts);
     }
 }
-MultipleChoice.prototype = new RunestoneBase();
 
 /*===================================
 ===     Setting MC variables      ===
 ===================================*/
 
 MultipleChoice.prototype.init = function (opts) {
-    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <ul> element
     this.origElem = orig;
 
@@ -1000,14 +982,12 @@ function Timed (opts) {
     }
 }
 
-Timed.prototype = new RunestoneBase();
 
 /*====================================
 === Setting Timed Assess Variables ===
 ====================================*/
 
 Timed.prototype.init = function (opts) {
-    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;
     this.origElem = orig; // the entire element of this timed assessment and all it"s children
     this.divid = orig.id;
@@ -1029,7 +1009,6 @@ Timed.prototype.init = function (opts) {
         this.showResults = false;
     }
 
-    console.log(localStorage.getItem(eBookConfig.email + ":" + this.divid));
     this.running = 0;
     this.paused = 0;
     this.done = 0;
@@ -1433,7 +1412,6 @@ Timed.prototype.findTimeTaken = function () {
 Timed.prototype.storeScore = function () {
     var storage_arr = [];
     storage_arr.push(this.score, this.incorrect, this.skipped, this.timeTaken);
-    console.log(storage_arr);
     localStorage.setItem(eBookConfig.email + ":" + this.divid, storage_arr.join(";"));
 };
 

@@ -39,6 +39,7 @@ def setup(app):
     app.add_javascript('lib/underscore-min.js')
     app.add_javascript('lib/lis.js')
     app.add_javascript('parsons.js')
+    app.add_javascript('parsonsaux.js')
     app.add_javascript('parsons-noconflict.js')
 
 
