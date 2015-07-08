@@ -44,9 +44,8 @@ DragNDrop.prototype.init = function (opts) {
         this.random = true;
     }
 
-    this.draggableArray = [];
-    this.dropZoneArray = [];
-    this.populateArrays();
+    this.dragPairArray = [];
+    this.populateArray();
 
     this.question = null;
     this.getQuestion();
@@ -54,12 +53,28 @@ DragNDrop.prototype.init = function (opts) {
     this.createNewElements();
 };
 
-DragNDrop.prototype.populateArrays = function () {
+DragNDrop.prototype.populateArray = function () {
     for (var i = 0; i < this.origElem.childNodes.length; i++) {
-        if ($(this.origElem.childNodes[i]).data("component") === "draggable") {
-            this.draggableArray.push(this.origElem.childNodes[i]);
-        } else if ($(this.origElem.childNodes[i]).data("component") === "dropzone") {
-            this.dropZoneArray.push(this.origElem.childNodes[i]);
+        if ($(this.origElem.childNodes[i]).data("component") === "dropzone") {
+
+            var tmp = document.getElementById($(this.origElem.childNodes[i]).attr("for"));
+            var replaceSpan = document.createElement("span");
+            replaceSpan.innerHTML = tmp.innerHTML;
+            replaceSpan.id = tmp.id;
+            $(replaceSpan).attr("draggable","true");
+            $(replaceSpan).addClass("draggable-drag");
+
+            var otherReplaceSpan = document.createElement("span");
+
+            otherReplaceSpan.innerHTML = this.origElem.childNodes[i].innerHTML;
+            otherReplaceSpan.id = this.origElem.childNodes[i].id;
+            $(otherReplaceSpan).addClass("draggable-drop");
+
+            this.setEventListeners(replaceSpan, otherReplaceSpan);
+            var tmpArr = [];
+            tmpArr.push(replaceSpan);
+            tmpArr.push(otherReplaceSpan);
+            this.dragPairArray.push(tmpArr);
         }
     }
 };
@@ -86,44 +101,52 @@ DragNDrop.prototype.createNewElements = function () {
     this.containerDiv.appendChild(this.draggableDiv);
     this.containerDiv.appendChild(this.dropZoneDiv);
 
+    this.createButton();
     this.setReplacementSpans();
+    this.renderFeedbackDiv();
 
     $(this.origElem).replaceWith(this.containerDiv);
 };
 
+DragNDrop.prototype.createButton = function () {
+    this.submitButton = document.createElement("button");    // Check me button
+    this.submitButton.textContent = "Check Me";
+    $(this.submitButton).attr({
+        "class": "btn btn-success drag-button",
+        "name": "do answer",
+    });
+
+    this.submitButton.onclick = function () {
+        this.dragEval();
+    }.bind(this);
+
+    this.containerDiv.appendChild(this.submitButton);
+};
+
 DragNDrop.prototype.setReplacementSpans = function () {
-    for (var i = 0; i < this.draggableArray.length; i++) {
-        var replaceSpan = document.createElement("span");
-        replaceSpan.innerHTML = this.draggableArray[i].innerHTML;
-        replaceSpan.id = this.draggableArray[i].id;
-        $(replaceSpan).attr("draggable","true");
-
-        var otherReplaceSpan = document.createElement("span");
-
-        otherReplaceSpan.innerHTML = this.dropZoneArray[i].innerHTML;
-        $(otherReplaceSpan).addClass("dropzone");
-        otherReplaceSpan.id = this.dropZoneArray[i].id;
-
-        this.setEventListeners(replaceSpan, otherReplaceSpan);
-
-        this.draggableDiv.appendChild(replaceSpan);
-        this.dropZoneDiv.appendChild(otherReplaceSpan);
-        //this.dropZoneDiv.appendChild(document.createElement("br"));
+    this.createIndexArray();
+    this.randomizeIndexArray();
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        this.draggableDiv.appendChild(this.dragPairArray[this.indexArray[i]][0]);
+    }
+    this.randomizeIndexArray();
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        this.dropZoneDiv.appendChild(this.dragPairArray[this.indexArray[i]][1]);
     }
 };
 
 DragNDrop.prototype.setEventListeners = function (dgSpan, dpSpan) {
     dgSpan.addEventListener("dragstart", function (ev) {
-        ev.dataTransfer.setData("asdf", ev.target.id);
+        ev.dataTransfer.setData("draggableID", ev.target.id);
     });
     dgSpan.addEventListener("dragover", function (ev) {
         ev.preventDefault();
     });
     dgSpan.addEventListener("drop", function (ev) {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("asdf");
+        var data = ev.dataTransfer.getData("draggableID");
         var draggedSpan = document.getElementById(data);
-        if ($(this.draggableDiv).has(draggedSpan).context != draggedSpan) {  // Make sure element isn't already there--prevents erros w/appending child
+        if (!$(this.draggableDiv).has(draggedSpan).length && draggedSpan != ev.target) {  // Make sure element isn't already there--prevents erros w/appending child
             this.draggableDiv.appendChild(draggedSpan);
         }
     }.bind(this));
@@ -133,12 +156,64 @@ DragNDrop.prototype.setEventListeners = function (dgSpan, dpSpan) {
     });
     dpSpan.addEventListener("drop", function (ev) {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("asdf");
+        var data = ev.dataTransfer.getData("draggableID");
         var draggedSpan = document.getElementById(data);
-        if ($(ev.target).has(draggedSpan).context != draggedSpan && $(ev.target).hasClass("dropzone")) {  // Make sure element isn't already there--prevents erros w/appending child
+        if (!$(ev.target).has(draggedSpan).length && $(ev.target).hasClass("draggable-drop")) {  // Make sure element isn't already there--prevents erros w/appending child
             ev.target.appendChild(draggedSpan);
         }
     });
+};
+
+DragNDrop.prototype.createIndexArray = function () {
+    this.indexArray = [];
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        this.indexArray.push(i);
+    }
+};
+
+DragNDrop.prototype.randomizeIndexArray = function () {
+    var currentIndex = this.indexArray.length, temporaryValue, randomIndex;
+    // While there remain elements to shuffle...
+    while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        // And swap it with the current element.
+        temporaryValue = this.indexArray[currentIndex];
+        this.indexArray[currentIndex] = this.indexArray[randomIndex];
+        this.indexArray[randomIndex] = temporaryValue;
+    }
+};
+
+DragNDrop.prototype.renderFeedbackDiv = function () {
+    this.feedBackDiv = document.createElement("div");
+    this.feedBackDiv.id = this.divid + "_feedback";
+    this.containerDiv.appendChild(document.createElement("br"));
+    this.containerDiv.appendChild(this.feedBackDiv);
+};
+
+DragNDrop.prototype.dragEval = function () {
+    this.correct = true;
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        if (!$(this.dragPairArray[i][1]).has(this.dragPairArray[i][0]).length) {
+            this.correct = false;
+        }
+    }
+    this.renderFeedback();
+};
+
+DragNDrop.prototype.renderFeedback = function () {
+    this.feedback = null;
+    if (this.correct) {
+        $(this.feedBackDiv).html("You are correct!");
+        $(this.feedBackDiv).attr("class", "alert alert-success draggable-feedback");
+    } else {
+        if (this.feedback == null) {
+            this.feedback = "You suck";
+        }
+        $(this.feedBackDiv).html("Incorrect.    " + this.feedback);
+        $(this.feedBackDiv).attr("class", "alert alert-danger draggable-feedback");
+    }
 };
 /*=================================
 == Find the custom HTML tags and ==

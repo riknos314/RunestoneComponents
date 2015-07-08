@@ -1,24 +1,22 @@
 .draggable {
-    padding-left: 0px;
     margin-left: 2%;
     display:inline-block;
 	text-align: left;
 	vertical-align: top;
-}
-.sortable-code div {
-    font-size: 120%;
-    font-family: monospace;
-    list-style: none;
     background-color: #efefff;
+    font-family: monospace;
+    font-size: 120%;
     padding-bottom: 10px;
-    padding-left: 0;
-    margin-left: 0;
+    min-width: 35%;
+    min-height:59%;
     border: 1px solid #efefff;;
 }
-ul.output {
-    background-color: #FFA;
+.drag-button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
-.draggable span {
+.draggable-drag {
     -moz-border-radius:10px;
     -webkit-border-radius:10px;
     min-width: 250pt;
@@ -33,17 +31,23 @@ ul.output {
     cursor: move;
 }
 
-.sortable-code span:hover {
-    overflow: visible;
+.draggable-feedback {
+    text-align: left !important;
 }
 
+.draggable-drop {
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    min-width: 250pt;
+    border-radius: 10px;
+    display: block;
+    background-color:#EFEFEF;
+    border:1px solid lightgray;
+    padding:10px;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
 .sortable-code-container {
     text-align:center;
-}
-
-.parsons-controls{
-	max-width: 500pt;
-	margin-left: auto;
-	margin-right: auto;
-	text-align:center;
 }
