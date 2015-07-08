@@ -154,6 +154,7 @@ class TabbedStuffDirective(Directive):
         # Raise an error if the directive does not have contents.
         self.assert_has_content()
 
+
         self.options['divid'] = self.arguments[0]
 
         # Create the node, to be populated by "nested_parse".

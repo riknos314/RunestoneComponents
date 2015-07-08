@@ -107,7 +107,6 @@ TabbedStuff.prototype.createTabContainer = function () {     // First create a c
 };
 
 TabbedStuff.prototype.createTabs = function () {
-    var _this = this;
     // Create tabs in format <li><a><span></span></a></li> to be appended to the <ul>
     for (var i = 0; i < this.childTabs.length; i++) {
         // First create tabname and tabfriendly name that has no spaces to be used for the id
@@ -140,8 +139,8 @@ TabbedStuff.prototype.createTabs = function () {
         var tabHTML = $(this.childTabs[i]).html();
         $(tabPaneDiv).html(tabHTML);
 
-        if (!_this.inactive) {
-            if (_this.activeTab === i) {
+        if (!this.inactive) {
+            if (this.activeTab === i) {
                 $(tabListElement).addClass("active");
                 $(tabPaneDiv).addClass("active");
             }

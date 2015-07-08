@@ -220,7 +220,7 @@ FITB.prototype.renderFITBButtons = function () {
         "class": "btn btn-success",
         "name": "do answer"
     });
-    this.submitButton.addEventListener('click', function () {
+    this.submitButton.addEventListener("click", function () {
         _this.checkFITBStorage();
     }, false);
     this.compareButton = document.createElement("button");    // Compare me button
@@ -231,7 +231,7 @@ FITB.prototype.renderFITBButtons = function () {
         "name": "compare"
     });
     this.compareButton.textContent = "Compare Me";
-    this.compareButton.addEventListener('click', function () {
+    this.compareButton.addEventListener("click", function () {
         _this.compareFITBAnswers();
     }, false);
     this.inputDiv.appendChild(document.createElement("br"));
@@ -626,11 +626,12 @@ MultipleChoice.prototype.renderMCFormButtons = function () {
         "name": "do answer"
     });
     if (this.multipleanswers) {
-        this.submitButton.addEventListener('click', function () {
+        this.submitButton.addEventListener("click", function () {
             _this.processMCMASubmission();
         }, false);
     } else {
-        this.submitButton.addEventListener('click', function () {
+
+        this.submitButton.addEventListener("click", function () {
             _this.processMCMFSubmission();
         }, false);
     } // end else
@@ -645,7 +646,7 @@ MultipleChoice.prototype.renderMCFormButtons = function () {
         "name": "compare"
     });
     this.compareButton.textContent = "Compare me";
-    this.compareButton.addEventListener('click', function () {
+    this.compareButton.addEventListener("click", function () {
         _this.compareAnswers(_this.divid);
     }, false);
     this.optsForm.appendChild(this.compareButton);
@@ -1098,7 +1099,7 @@ Timed.prototype.renderControlButtons = function () {
         "id": "start"
     });
     this.startBtn.textContent = "Start";
-    this.startBtn.addEventListener('click', function () {
+    this.startBtn.addEventListener("click", function () {
         _this.startAssessment();
     }, false);
     $(this.pauseBtn).attr({
@@ -1107,7 +1108,7 @@ Timed.prototype.renderControlButtons = function () {
         "disabled":"true"
     });
     this.pauseBtn.textContent = "Pause";
-    this.pauseBtn.addEventListener('click', function () {
+    this.pauseBtn.addEventListener("click", function () {
         _this.pauseAssessment();
     }, false);
     this.controlDiv.appendChild(this.startBtn);
@@ -1126,7 +1127,7 @@ Timed.prototype.renderSubmitButton = function () {
         "class": "btn btn-inverse"
     });
     this.finishButton.textContent = "Submit answers";
-    this.finishButton.addEventListener('click', function () {
+    this.finishButton.addEventListener("click", function () {
         _this.finishAssessment();
     }, false);
     this.buttonContainer.appendChild(this.finishButton);
