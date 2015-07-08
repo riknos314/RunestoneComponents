@@ -46,45 +46,36 @@ DragNDrop.prototype.init = function (opts) {
     this.feedback = "";
     this.dragPairArray = [];
     this.question = "";
-
-    this.checkLocalStorage();
     this.populate();   // Populates this.dragPairArray, this.feedback and this.question
 
     this.createNewElements();
 };
 
 DragNDrop.prototype.populate = function () {
+    for (var i = 0; i < this.origElem.childNodes.length; i++) {
+        if ($(this.origElem.childNodes[i]).data("component") === "dropzone") {
 
-    if (this.hasStoredDropZones) {
-        for (var i = 0; i < this.storedDropZones.length; i++) {
+            var tmp = document.getElementById($(this.origElem.childNodes[i]).attr("for"));
+            var replaceSpan = document.createElement("span");
+            replaceSpan.innerHTML = tmp.innerHTML;
+            replaceSpan.id = tmp.id;
+            $(replaceSpan).attr("draggable","true");
+            $(replaceSpan).addClass("draggable-drag");
 
-        }
-    } else {
-        for (var i = 0; i < this.origElem.childNodes.length; i++) {
-            if ($(this.origElem.childNodes[i]).data("component") === "dropzone") {
+            var otherReplaceSpan = document.createElement("span");
 
-                var tmp = document.getElementById($(this.origElem.childNodes[i]).attr("for"));
-                var replaceSpan = document.createElement("span");
-                replaceSpan.innerHTML = tmp.innerHTML;
-                replaceSpan.id = tmp.id;
-                $(replaceSpan).attr("draggable","true");
-                $(replaceSpan).addClass("draggable-drag");
+            otherReplaceSpan.innerHTML = this.origElem.childNodes[i].innerHTML;
+            $(otherReplaceSpan).addClass("draggable-drop");
 
-                var otherReplaceSpan = document.createElement("span");
-
-                otherReplaceSpan.innerHTML = this.origElem.childNodes[i].innerHTML;
-                $(otherReplaceSpan).addClass("draggable-drop");
-
-                this.setEventListeners(replaceSpan, otherReplaceSpan);
-                var tmpArr = [];
-                tmpArr.push(replaceSpan);
-                tmpArr.push(otherReplaceSpan);
-                this.dragPairArray.push(tmpArr);
-            } else if ($(this.origElem.childNodes[i]).data("component") === "question") {
-                this.question = this.origElem.childNodes[i].innerHTML;
-            } else if ($(this.origElem.childNodes[i]).data("component") === "feedback") {
-                this.feedback = this.origElem.childNodes[i].innerHTML;
-            }
+            this.setEventListeners(replaceSpan, otherReplaceSpan);
+            var tmpArr = [];
+            tmpArr.push(replaceSpan);
+            tmpArr.push(otherReplaceSpan);
+            this.dragPairArray.push(tmpArr);
+        } else if ($(this.origElem.childNodes[i]).data("component") === "question") {
+            this.question = this.origElem.childNodes[i].innerHTML;
+        } else if ($(this.origElem.childNodes[i]).data("component") === "feedback") {
+            this.feedback = this.origElem.childNodes[i].innerHTML;
         }
     }
 
@@ -116,13 +107,15 @@ DragNDrop.prototype.createNewElements = function () {
     this.containerDiv.appendChild(this.dropZoneDiv);
 
     this.createButtons();
+    this.checkLocalStorage();
     this.appendReplacementSpans();
     this.renderFeedbackDiv();
 
     $(this.origElem).replaceWith(this.containerDiv);
-    if (!this.hasStoredDropZones) {
+    if (!this.hasStoredDropzones) {
         this.minheight = $(this.draggableDiv).height();
     }
+
     this.draggableDiv.style.minHeight = this.minheight.toString() + "px";
 };
 
@@ -158,16 +151,25 @@ DragNDrop.prototype.createButtons = function () {
 DragNDrop.prototype.appendReplacementSpans = function () {
     this.createIndexArray();
     this.randomizeIndexArray();
-    if (this.hasStoredDropZones) {
-
-    } else {
-        for (var i = 0; i < this.dragPairArray.length; i++) {
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        if (this.hasStoredDropzones) {
+            if ($.inArray(this.indexArray[i][0], this.pregnantIndexArray) < 0) {
+                this.draggableDiv.appendChild(this.dragPairArray[this.indexArray[i]][0]);
+            }
+        } else {
             this.draggableDiv.appendChild(this.dragPairArray[this.indexArray[i]][0]);
         }
-        this.randomizeIndexArray();
-        for (var i = 0; i < this.dragPairArray.length; i++) {
-            this.dropZoneDiv.appendChild(this.dragPairArray[this.indexArray[i]][1]);
+    }
+    this.randomizeIndexArray();
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        if (this.hasStoredDropzones) {
+            console.log(this.pregnantIndexArray[i]);
+            if (this.pregnantIndexArray[this.indexArray[i]] !== "-1") {
+                console.log(this.dragPairArray[this.pregnantIndexArray[this.indexArray[i]]]);
+                this.dragPairArray[this.indexArray[i]][1].appendChild(this.dragPairArray[this.pregnantIndexArray[this.indexArray[i]]][0]);
+            }
         }
+        this.dropZoneDiv.appendChild(this.dragPairArray[this.indexArray[i]][1]);
     }
 
 };
@@ -275,29 +277,36 @@ DragNDrop.prototype.dragEval = function () {
 };
 
 DragNDrop.prototype.setLocalStorage = function () {
-    localStorage.setItem(eBookConfig.email + ":" + this.divid + "masterarray", this.dragPairArray.join(";"));
-    localStorage.setItem(eBookConfig.email + ":" + this.divid + "-minheight", this.minHeight.toString());
+    this.pregnantIndexArray = [];
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        if (!this.hasNoDragChild(this.dragPairArray[i][1])) {
+            for (var j = 0; j < this.dragPairArray.length; j++) {
+                if ($(this.dragPairArray[i][1]).has(this.dragPairArray[j][0]).length) {
+                    this.pregnantIndexArray.push(j);
+                }
+            }
+        } else {
+            this.pregnantIndexArray.push(-1);
+        }
+    }
+    var tmp = this.pregnantIndexArray.join(";") + "_split_" + this.minheight;
+    localStorage.setItem(eBookConfig.email + ":" + this.divid + "-dragInfo", tmp);
 };
 
 DragNDrop.prototype.checkLocalStorage = function () {
     this.hasStoredDropZones = false;
     var len = localStorage.length;
     if (len > 0) {
-        var tmpOne = localStorage.getItem(eBookConfig.email + ":" + this.divid + "-masterarray");
-        var tmpTwo = localStorage.getItem(eBookConfig.email + ":" + this.divid + "-minheight");
-        if (tmpOne !== null && tmpTwo !== null && tmpThree !== null) {
+        var ex = localStorage.getItem(eBookConfig.email + ":" + this.divid + "-dragInfo");
+        console.log(ex);
+        if (ex !== null) {
             this.hasStoredDropzones = true;
-            this.masterArray = tmpOne.split(";");
-
-            this.storageDropZonesArray = [];
-            this.storageDraggablesArray = [];
-            for (var i = 0; i < this.masterArray.length; i++) {
-                this.storageDropZonesArray.push(this.masterArray[i][1]);
-                this.storageDraggablesArray.push(this.masterArray[i][0]);
-            }
-
-            this.minHeight = tmpTwo;
+            this.minheight = ex.split("_split_")[1];
+            console.log(this.minheight);
+            this.pregnantIndexArray = ex.split("_split_")[0].split(";");
+            console.log(this.pregnantIndexArray);
         }
+
     }
 };
 
