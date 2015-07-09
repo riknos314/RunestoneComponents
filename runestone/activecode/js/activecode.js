@@ -111,7 +111,6 @@ ActiveCode.prototype.createControls = function () {
     butt = document.createElement("button");
     $(butt).addClass("ac_opt btn btn-default");
     $(butt).text("Save");
-    $(butt).css("margin-left","10px");
     this.saveButton = butt;
     ctrlDiv.appendChild(butt);
 
@@ -119,7 +118,6 @@ ActiveCode.prototype.createControls = function () {
     butt = document.createElement("button");
     $(butt).addClass("ac_opt btn btn-default");
     $(butt).text("Load");
-    $(butt).css("margin-left","10px");
     this.loadButton = butt;
     ctrlDiv.appendChild(butt);
 
