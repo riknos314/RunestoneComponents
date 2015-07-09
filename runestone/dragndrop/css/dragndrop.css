@@ -15,9 +15,6 @@
 }
 .drag-button {
     display: inline-block;
-    margin-left: 3px !important;
-    margin-right: 3px !important;
-    margin-top: 10px;
 }
 .drag-reset {
     background-color: #474949;
