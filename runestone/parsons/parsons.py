@@ -33,14 +33,11 @@ def setup(app):
     # includes parsons specific javascript headers
     # parsons-noconflict reverts underscore and
     # jquery to their original versions
-    app.add_javascript('lib/jquery.min.js')
-    app.add_javascript('lib/jquery-ui.min.js')
     app.add_javascript('lib/prettify.js')
     app.add_javascript('lib/underscore-min.js')
     app.add_javascript('lib/lis.js')
     app.add_javascript('parsons.js')
     app.add_javascript('parsonsaux.js')
-    app.add_javascript('parsons-noconflict.js')
 
 
 TEMPLATE = '''
