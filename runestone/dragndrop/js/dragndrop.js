@@ -114,11 +114,9 @@ DragNDrop.prototype.createNewElements = function () {
     $(this.origElem).replaceWith(this.containerDiv);
     if (!this.hasStoredDropzones) {
         this.minheight = $(this.draggableDiv).height();
-        this.minwidth = $(this.draggableDiv).width();
     }
 
     this.draggableDiv.style.minHeight = this.minheight.toString() + "px";
-    this.draggableDiv.style.minWidth = this.minwidth.toString() + "px";
 };
 
 DragNDrop.prototype.createButtons = function () {
@@ -291,7 +289,7 @@ DragNDrop.prototype.setLocalStorage = function () {
             this.pregnantIndexArray.push(-1);
         }
     }
-    var tmp = this.pregnantIndexArray.join(";") + "_split_" + this.minheight + "|||" + this.minwidth;
+    var tmp = this.pregnantIndexArray.join(";") + "_split_" + this.minheight;
     localStorage.setItem(eBookConfig.email + ":" + this.divid + "-dragInfo", tmp);
 };
 
@@ -302,8 +300,7 @@ DragNDrop.prototype.checkLocalStorage = function () {
         var ex = localStorage.getItem(eBookConfig.email + ":" + this.divid + "-dragInfo");
         if (ex !== null) {
             this.hasStoredDropzones = true;
-            this.minheight = ex.split("_split_")[1].split("|||")[0];
-            this.minwidth = ex.split("_split_")[1]. split("|||")[1];
+            this.minheight = ex.split("_split_")[1];
             this.pregnantIndexArray = ex.split("_split_")[0].split(";");
         }
 
