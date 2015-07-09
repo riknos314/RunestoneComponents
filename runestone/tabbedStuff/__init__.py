@@ -1,1 +1,1 @@
-from .tabbedstuff import *
+from .tabbedStuff import *
