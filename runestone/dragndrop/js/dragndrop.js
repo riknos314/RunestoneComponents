@@ -50,7 +50,9 @@ DragNDrop.prototype.init = function (opts) {
 
     this.createNewElements();
 };
-
+/*======================
+=== Update variables ===
+======================*/
 DragNDrop.prototype.populate = function () {
     for (var i = 0; i < this.origElem.childNodes.length; i++) {
         if ($(this.origElem.childNodes[i]).data("component") === "dropzone") {
@@ -80,7 +82,10 @@ DragNDrop.prototype.populate = function () {
     }
 
 };
-
+/*========================================
+== Create new HTML elements and replace ==
+==      original element with them      ==
+========================================*/
 DragNDrop.prototype.createNewElements = function () {
     this.containerDiv = document.createElement("div");
     $(this.containerDiv).addClass("alert alert-warning draggable-container");
@@ -202,7 +207,15 @@ DragNDrop.prototype.setEventListeners = function (dgSpan, dpSpan) {
         }
     }.bind(this));
 };
-
+DragNDrop.prototype.renderFeedbackDiv = function () {
+    this.feedBackDiv = document.createElement("div");
+    this.feedBackDiv.id = this.divid + "_feedback";
+    this.containerDiv.appendChild(document.createElement("br"));
+    this.containerDiv.appendChild(this.feedBackDiv);
+};
+/*=======================
+== Auxiliary functions ==
+=======================*/
 DragNDrop.prototype.hasNoDragChild = function (parent) {  // Ensures that each dropZoneDiv can have only one draggable child
     var counter = 0;
     for (var i = 0; i < parent.childNodes.length; i++) {
@@ -237,7 +250,9 @@ DragNDrop.prototype.randomizeIndexArray = function () {
         this.indexArray[randomIndex] = temporaryValue;
     }
 };
-
+/*==============================
+== Reset button functionality ==
+==============================*/
 DragNDrop.prototype.resetDraggables = function () {
     for (var i = 0; i < this.dragPairArray.length; i++) {
         for (var j = 0; j < this.dragPairArray[i][1].childNodes.length; j++) {
@@ -248,13 +263,9 @@ DragNDrop.prototype.resetDraggables = function () {
     }
     this.feedBackDiv.style.display = "none";
 };
-
-DragNDrop.prototype.renderFeedbackDiv = function () {
-    this.feedBackDiv = document.createElement("div");
-    this.feedBackDiv.id = this.divid + "_feedback";
-    this.containerDiv.appendChild(document.createElement("br"));
-    this.containerDiv.appendChild(this.feedBackDiv);
-};
+/*===========================
+== Evaluation and feedback ==
+===========================*/
 
 DragNDrop.prototype.dragEval = function () {
     this.correct = true;
@@ -275,7 +286,19 @@ DragNDrop.prototype.dragEval = function () {
     this.setLocalStorage();
     this.renderFeedback();
 };
-
+DragNDrop.prototype.renderFeedback = function () {
+    this.feedBackDiv.style.display = "block";
+    if (this.correct) {
+        $(this.feedBackDiv).html("You are correct!");
+        $(this.feedBackDiv).attr("class", "alert alert-success draggable-feedback");
+    } else {
+        $(this.feedBackDiv).html("Incorrect. " + "You got " + this.correctNum + " correct and " + this.incorrectNum + " incorrect out of " + this.dragNum + ". You left " + this.unansweredNum + " blank. " + this.feedback);
+        $(this.feedBackDiv).attr("class", "alert alert-danger draggable-feedback");
+    }
+};
+/*===============================
+== Local storage functionality ==
+===============================*/
 DragNDrop.prototype.setLocalStorage = function () {
     this.pregnantIndexArray = [];
     for (var i = 0; i < this.dragPairArray.length; i++) {
@@ -304,17 +327,6 @@ DragNDrop.prototype.checkLocalStorage = function () {
             this.pregnantIndexArray = ex.split("_split_")[0].split(";");
         }
 
-    }
-};
-
-DragNDrop.prototype.renderFeedback = function () {
-    this.feedBackDiv.style.display = "block";
-    if (this.correct) {
-        $(this.feedBackDiv).html("You are correct!");
-        $(this.feedBackDiv).attr("class", "alert alert-success draggable-feedback");
-    } else {
-        $(this.feedBackDiv).html("Incorrect. " + "You got " + this.correctNum + " correct and " + this.incorrectNum + " incorrect out of " + this.dragNum + ". You left " + this.unansweredNum + " blank. " + this.feedback);
-        $(this.feedBackDiv).attr("class", "alert alert-danger draggable-feedback");
     }
 };
 /*=================================
