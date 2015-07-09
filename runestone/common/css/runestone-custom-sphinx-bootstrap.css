@@ -186,6 +186,11 @@ input[type="button"].btn.btn-sm {
     color: #fff;
 }
 
+input[type="radio"],
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
 .tooltip {
     z-index: 2000 !important;
 }
