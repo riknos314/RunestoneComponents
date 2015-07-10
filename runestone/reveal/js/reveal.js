@@ -46,13 +46,16 @@ Reveal.prototype.init = function (opts) {
     this.showtitle = null;     // Title of button that shows the concealed data
     this.hidetitle = null;
     this.origContent = $(this.origElem).html();
+    this.children = this.origElem.childNodes;
+
+    if (this.dataModal) {
+        this.checkForTitle();
+    }
 
     this.getButtonTitles();
     this.createShowButton();
 
-    if (this.dataModal) {
-        this.checkForTitle();
-    } else {
+    if (!this.dataModal) {
         this.createHideButton();     // Hide button is already implemented in modal dialog
     }
 };
@@ -89,7 +92,10 @@ Reveal.prototype.createShowButton = function () {
     this.wrapDiv.appendChild(this.revealDiv);
 
     // Get original content, put it inside revealDiv and replace original div with revealDiv
-    $(this.revealDiv).html(this.origContent);
+    //$(this.revealDiv).html(this.origContent);
+    for (var i = 0; i < this.children.length; i++) {
+        this.revealDiv.appendChild(this.children[i]);
+    }
     $(this.revealDiv).hide();
     $(this.origElem).replaceWith(this.wrapDiv);
 
@@ -98,15 +104,16 @@ Reveal.prototype.createShowButton = function () {
     this.sbutt.class = "btn btn-default reveal_button";
     this.sbutt.textContent = this.showtitle;
     this.sbutt.id = this.divid + "_show";
-    this.sbutt.onclick = function () {
-        if (_this.dataModal) {     // Display the data either inline or in a modal dialog
-            _this.showModal();
-        } else {
+    if (!this.dataModal) {
+        this.sbutt.onclick = function () {
             _this.showInline();
             $(this).hide();
-
-        }
-    };
+        };
+    } else {
+        this.createModal();
+        $(this.sbutt).attr({"data-toggle":"modal",
+                        "data-target":"#" + this.divid + "_modal"});
+    }
     this.wrapDiv.appendChild(this.sbutt);
 };
 
@@ -128,8 +135,49 @@ Reveal.prototype.createHideButton = function () {
 /*=================
 === Modal logic ===
 =================*/
-Reveal.prototype.showModal = function () {     // Displays popup dialog modal window
-    var html = "<div class='modal fade'>" +
+Reveal.prototype.createModal = function () {     // Displays popup dialog modal window
+    this.modalContainerDiv = document.createElement("div");
+    $(this.modalContainerDiv).addClass("modal fade");
+    this.modalContainerDiv.id = this.divid + "_modal";
+    $(this.modalContainerDiv).attr("role", "dialog");
+    document.body.appendChild(this.modalContainerDiv);
+
+    this.modalDialogDiv = document.createElement("div");
+    $(this.modalDialogDiv).addClass("modal-dialog compare-modal");
+    this.modalContainerDiv.appendChild(this.modalDialogDiv);
+
+    this.modalContentDiv = document.createElement("div");
+    $(this.modalContentDiv).addClass("modal-content");
+    this.modalDialogDiv.appendChild(this.modalContentDiv);
+
+    this.modalHeaderDiv = document.createElement("div");
+    $(this.modalHeaderDiv).addClass("modal-header");
+    this.modalContentDiv.appendChild(this.modalHeaderDiv);
+
+    this.modalButton = document.createElement("button");
+    this.modalButton.type = "button";
+    $(this.modalButton).addClass("close");
+    $(this.modalButton).attr({"aria-hidden":"true",
+                            "data-dismiss":"modal"});
+    this.modalButton.innerHTML = "&times";
+    this.modalHeaderDiv.appendChild(this.modalButton);
+
+    this.modalTitleE = document.createElement("h4");
+    $(this.modalTitleE).addClass("modal-title");
+    this.modalTitleE.innerHTML = this.modalTitle;
+    this.modalHeaderDiv.appendChild(this.modalTitleE);
+
+    this.modalBody = document.createElement("div");
+    $(this.modalBody).addClass("modal-body");
+    for (var i = 0; i < this.children.length; i++) {
+        this.modalBody.appendChild(this.children[i]);
+    }
+    this.modalContentDiv.appendChild(this.modalBody);
+
+
+
+
+    /*var html = "<div class='modal fade'>" +
                 "    <div class='modal-dialog compare-modal'>" +
                 "        <div class='modal-content'>" +
                 "            <div class='modal-header'>" +
@@ -141,9 +189,9 @@ Reveal.prototype.showModal = function () {     // Displays popup dialog modal wi
                 "            </div>" +
                 "        </div>" +
                 "    </div>" +
-                "</div>";
-    var el = $(html);
-    el.modal();
+                "</div>";*/
+    //var el = $(this.modalContainerDiv);
+    //el.modal();
 };
 
 /*==================
