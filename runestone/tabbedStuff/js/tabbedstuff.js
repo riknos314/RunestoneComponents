@@ -136,8 +136,10 @@ TabbedStuff.prototype.createTabs = function () {
         $(tabPaneDiv).attr({
             "role": "tabpanel"
         });
-        var tabHTML = $(this.childTabs[i]).html();
-        $(tabPaneDiv).html(tabHTML);
+        //var tabHTML = $(this.childTabs[i]).html();
+        //$(tabPaneDiv).html(tabHTML);
+
+        tabPaneDiv.appendChild(this.childTabs[i]);
 
         if (!this.inactive) {
             if (this.activeTab === i) {

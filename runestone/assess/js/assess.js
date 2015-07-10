@@ -612,8 +612,10 @@ MultipleChoice.prototype.renderMCFormButtons = function () {
             _this.processMCMASubmission();
         }, false);
     } else {
-
-        this.submitButton.addEventListener("click", function () {
+        console.log("here");
+        this.submitButton.addEventListener("click", function (ev) {
+            console.log("hi");
+            ev.preventDefault();
             _this.processMCMFSubmission();
         }, false);
     } // end else
