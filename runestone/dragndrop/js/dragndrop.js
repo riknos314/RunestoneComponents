@@ -60,7 +60,7 @@ DragNDrop.prototype.populate = function () {
             var tmp = document.getElementById($(this.origElem.childNodes[i]).attr("for"));
             var replaceSpan = document.createElement("span");
             replaceSpan.innerHTML = tmp.innerHTML;
-            replaceSpan.id = tmp.id;
+            replaceSpan.id = this.divid + tmp.id;
             $(replaceSpan).attr("draggable","true");
             $(replaceSpan).addClass("draggable-drag");
 
@@ -94,17 +94,7 @@ DragNDrop.prototype.createNewElements = function () {
 
     this.draggableDiv = document.createElement("div");
     $(this.draggableDiv).addClass("draggable dragzone");
-    this.draggableDiv.addEventListener("dragover", function (ev) {  // Can't set these during this.setEventListeners because this.draggableDiv wasn't created yet
-        ev.preventDefault();
-    });
-    this.draggableDiv.addEventListener("drop", function (ev) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("draggableID");
-        var draggedSpan = document.getElementById(data);
-        if (!$(this.draggableDiv).has(draggedSpan).length) {  // Make sure element isn't already there--prevents erros w/appending child
-            this.draggableDiv.appendChild(draggedSpan);
-        }
-    }.bind(this));
+    this.addDragDivListeners();
 
     this.dropZoneDiv = document.createElement("div");
     $(this.dropZoneDiv).addClass("draggable");
@@ -122,6 +112,34 @@ DragNDrop.prototype.createNewElements = function () {
     }
 
     this.draggableDiv.style.minHeight = this.minheight.toString() + "px";
+};
+
+DragNDrop.prototype.addDragDivListeners = function () {
+    this.draggableDiv.addEventListener("dragover", function (ev) {  // Can't set these during this.setEventListeners because this.draggableDiv wasn't created yet
+        ev.preventDefault();
+        if ($(this.draggableDiv).hasClass("possibleDrop")) {
+            return;
+        }
+        $(this.draggableDiv).addClass("possibleDrop");
+    }.bind(this));
+    this.draggableDiv.addEventListener("drop", function (ev) {
+        ev.preventDefault();
+        if ($(this.draggableDiv).hasClass("possibleDrop")) {
+            $(this.draggableDiv).removeClass("possibleDrop");
+        }
+        var data = ev.dataTransfer.getData("draggableID");
+        var draggedSpan = document.getElementById(data);
+        if (!$(this.draggableDiv).has(draggedSpan).length && !this.strangerDanger(draggedSpan)) {  // Make sure element isn't already there--prevents erros w/appending child
+            this.draggableDiv.appendChild(draggedSpan);
+        }
+    }.bind(this));
+
+    this.draggableDiv.addEventListener("dragleave", function(e) {
+        if (!$(this.draggableDiv).hasClass("possibleDrop")) {
+            return;
+        }
+        $(this.draggableDiv).removeClass("possibleDrop");
+    }.bind(this));
 };
 
 DragNDrop.prototype.createButtons = function () {
@@ -168,9 +186,7 @@ DragNDrop.prototype.appendReplacementSpans = function () {
     this.randomizeIndexArray();
     for (var i = 0; i < this.dragPairArray.length; i++) {
         if (this.hasStoredDropzones) {
-            console.log(this.pregnantIndexArray[i]);
             if (this.pregnantIndexArray[this.indexArray[i]] !== "-1") {
-                console.log(this.dragPairArray[this.pregnantIndexArray[this.indexArray[i]]]);
                 this.dragPairArray[this.indexArray[i]][1].appendChild(this.dragPairArray[this.pregnantIndexArray[this.indexArray[i]]][0]);
             }
         }
@@ -190,19 +206,37 @@ DragNDrop.prototype.setEventListeners = function (dgSpan, dpSpan) {
         ev.preventDefault();
         var data = ev.dataTransfer.getData("draggableID");
         var draggedSpan = document.getElementById(data);
-        if (this.hasNoDragChild(ev.target) && draggedSpan != ev.target) {  // Make sure element isn't already there--prevents erros w/appending child
+        if (this.hasNoDragChild(ev.target) && draggedSpan != ev.target && !this.strangerDanger(draggedSpan)) {  // Make sure element isn't already there--prevents erros w/appending child
             this.draggableDiv.appendChild(draggedSpan);
         }
     }.bind(this));
-
     dpSpan.addEventListener("dragover", function (ev) {
         ev.preventDefault();
+        if ($(ev.target).hasClass("possibleDrop")) {
+            return;
+        }
+        if  ($(ev.target).hasClass("draggable-drop") && this.hasNoDragChild(ev.target)) {
+            $(ev.target).addClass("possibleDrop");
+        }
+    }.bind(this));
+
+    dpSpan.addEventListener("dragleave", function (ev) {
+        ev.preventDefault();
+        if (!$(ev.target).hasClass("possibleDrop")) {
+            return;
+        }
+        $(ev.target).removeClass("possibleDrop");
     });
+
     dpSpan.addEventListener("drop", function (ev) {
         ev.preventDefault();
+        if ($(ev.target).hasClass("possibleDrop")) {
+            $(ev.target).removeClass("possibleDrop");
+        }
         var data = ev.dataTransfer.getData("draggableID");
         var draggedSpan = document.getElementById(data);
-        if ($(ev.target).hasClass("draggable-drop") && this.hasNoDragChild(ev.target)) {  // Make sure element isn't already there--prevents erros w/appending child
+
+        if ($(ev.target).hasClass("draggable-drop") && this.hasNoDragChild(ev.target) && !this.strangerDanger(draggedSpan)) {  // Make sure element isn't already there--prevents erros w/appending child
             ev.target.appendChild(draggedSpan);
         }
     }.bind(this));
@@ -216,6 +250,15 @@ DragNDrop.prototype.renderFeedbackDiv = function () {
 /*=======================
 == Auxiliary functions ==
 =======================*/
+DragNDrop.prototype.strangerDanger = function (testSpan) {   // Returns true if the test span doesn't belong to this instance of DragNDrop
+    var strangerDanger = true;
+    for (var i = 0; i < this.dragPairArray.length; i++) {
+        if (testSpan === this.dragPairArray[i][0]) {
+            strangerDanger = false;
+        }
+    }
+    return strangerDanger;
+};
 DragNDrop.prototype.hasNoDragChild = function (parent) {  // Ensures that each dropZoneDiv can have only one draggable child
     var counter = 0;
     for (var i = 0; i < parent.childNodes.length; i++) {

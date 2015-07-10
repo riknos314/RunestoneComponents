@@ -57,3 +57,8 @@
 .draggable-container {
     text-align:center;
 }
+
+.possibleDrop {
+    border-color: #000000;
+    background-color: #CCCCCC;
+}
