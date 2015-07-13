@@ -56,11 +56,15 @@ function FITB (opts) {
         this.init(opts);
     }
 }
+
+FITB,prototype = new RunestoneBase();
+
 /*===================================
 ===    Setting FITB variables     ===
 ===================================*/
 
 FITB.prototype.init = function (opts) {
+    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <p> element
     this.origElem = orig;
     this.divid = orig.id;
@@ -401,11 +405,14 @@ function MultipleChoice (opts) {
     }
 }
 
+FITB,prototype = new RunestoneBase();
+
 /*===================================
 ===     Setting MC variables      ===
 ===================================*/
 
 MultipleChoice.prototype.init = function (opts) {
+    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;    // entire <ul> element
     this.origElem = orig;
 
@@ -985,12 +992,14 @@ function Timed (opts) {
     }
 }
 
+FITB,prototype = new RunestoneBase();
 
 /*====================================
 === Setting Timed Assess Variables ===
 ====================================*/
 
 Timed.prototype.init = function (opts) {
+    RunestoneBase.apply(this, arguments);
     var orig = opts.orig;
     this.origElem = orig; // the entire element of this timed assessment and all it"s children
     this.divid = orig.id;
