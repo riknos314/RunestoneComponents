@@ -32,6 +32,7 @@ function MultipleChoice (opts) {
 ===================================*/
 
 MultipleChoice.prototype.init = function (opts) {
+    console.log(opts.orig);
     var orig = opts.orig;    // entire <ul> element
     this.origElem = orig;
 
@@ -70,8 +71,13 @@ MultipleChoice.prototype.init = function (opts) {
 ====================================*/
 
 MultipleChoice.prototype.findQuestion = function () {         // Takes full text
-    var firstanswerid = this.answerList[0].id;
-    var delimiter = document.getElementById(firstanswerid).outerHTML;
+    var delimiter;
+    for (var i = 0; i < this.origElem.childNodes.length; i++) {
+        if (this.origElem.childNodes[i].nodeName === "LI") {
+            delimiter = this.origElem.childNodes[i].outerHTML;
+            break;
+        }
+    }
     var fulltext = $(this.origElem).html();
     var temp = fulltext.split(delimiter);
     this.question = temp[0];

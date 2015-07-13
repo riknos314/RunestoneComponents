@@ -48,11 +48,17 @@ Timed.prototype.init = function (opts) {
     this.incorrect = 0;
     this.skipped = 0;
 
-    this.MCMFList = []; // list of MCMF problems
-    this.MCMAList = []; // list of MCMA problems
-    this.FITBArray = [];    // list of FIB problems
+    this.renderedQuestionArray = []; // list of all problems
 
+    this.getNewChildren();
     this.renderTimedAssess();
+};
+
+Timed.prototype.getNewChildren = function () {
+    this.newChildren = [];
+    for (var i = 0; i < this.origElem.childNodes.length; i++) {
+        this.newChildren.push(this.origElem.childNodes[i]);
+    }
 };
 
 /*===============================
@@ -64,9 +70,7 @@ Timed.prototype.renderTimedAssess = function () {
     this.renderTimer();
     this.renderControlButtons();
     this.assessDiv.appendChild(this.timedDiv);    // This can"t be appended in renderContainer because then it renders above the timer and control buttons.
-    this.renderMCMAquestions();
-    this.renderMCMFquestions();
-    this.renderFIBquestions();
+    this.createRenderedQuestionArray();
     this.renderSubmitButton();
     this.renderFeedbackContainer();
 
@@ -79,12 +83,16 @@ Timed.prototype.renderContainer = function () {
     this.assessDiv.id = this.divid;
     this.timedDiv = document.createElement("div"); // div that will hold the questions for the timed assessment
     var elementHtml = $(this.origElem).html(); // take all of the tags that will generate the questions
-    $(this.timedDiv).html(elementHtml); // place those tags in the div
+    //$(this.timedDiv).html(elementHtml); // place those tags in the div
+    for (var i = 0; i < this.newChildren.length; i++) {
+        this.timedDiv.appendChild(this.newChildren[i]);
+    }
     $(this.timedDiv).attr({ // set the id, and style the div to be hidden
         "id": "timed_Test",
         "style": "display:none"
     });
-    this.newChildren = this.timedDiv.childNodes;    // These are the...
+    console.log(this.timedDiv.childNodes);
+    //this.newChildren = this.timedDiv.childNodes;    // These are the...
     // ...components that need to be rendered inside of the timed test
 };
 
@@ -127,7 +135,6 @@ Timed.prototype.renderControlButtons = function () {
     this.assessDiv.appendChild(this.wrapperDiv);
     this.assessDiv.appendChild(this.controlDiv);
 };
-
 Timed.prototype.renderSubmitButton = function () {
     var _this = this;
     this.buttonContainer = document.createElement("div");
@@ -152,44 +159,17 @@ Timed.prototype.renderFeedbackContainer = function () {
     this.timedDiv.appendChild(this.scoreDiv);
 };
 
-Timed.prototype.renderMCMFquestions = function () {
+Timed.prototype.createRenderedQuestionArray = function () {
     // this finds all the MCMF questions in this timed assessment and calls their constructor method
     // Also adds them to MCMFList
     var _this = this;
     for (var i = 0; i < this.newChildren.length; i++) {
         var tmpChild = this.newChildren[i];
         if ($(tmpChild).is("[data-component=multiplechoice]")) {
-            if ($(tmpChild).data("multipleanswers") !== true) {
-                _this.MCMFList.push(new TimedMC({"orig": tmpChild}));
-            }
-        }
-    }
-};
-
-Timed.prototype.renderMCMAquestions = function () {
-    // this finds all the MCMA questions in this timed assessment and calls their constructor method
-    // Also adds them to MCMAList
-    var _this = this;
-    for (var i = 0; i < this.newChildren.length; i++) {
-        var tmpChild = this.newChildren[i];
-        if ($(tmpChild).is("[data-component=multiplechoice]")) {
-            if ($(tmpChild).data("multipleanswers") === true) {
-                var newMCMA = new TimedMC({"orig": tmpChild});
-                _this.MCMAList.push(newMCMA);
-            }
-        }
-    }
-};
-
-Timed.prototype.renderFIBquestions = function () {
-    // this finds all the FIB questions in this timed assessment and calls their constructor method
-    // Also adds them to FIBList
-    var _this = this;
-    for (var i = 0; i < this.newChildren.length; i++) {
-        var tmpChild = this.newChildren[i];
-        if ($(tmpChild).is("[data-component=fillintheblank]")) {
+            _this.renderedQuestionArray.push(new TimedMC({"orig": tmpChild}));
+        } else if ($(tmpChild).is("[data-component=fillintheblank]")) {
             var newFITB = new TimedFITB({"orig": tmpChild});
-            _this.FITBArray.push(newFITB);
+            _this.renderedQuestionArray.push(newFITB);
         }
     }
 };
@@ -367,14 +347,8 @@ Timed.prototype.finishAssessment = function () {
 
 Timed.prototype.submitTimedProblems = function () {
     var _this = this;
-    for (var i = 0; i < this.MCMAList.length; i++) {
-        _this.MCMAList[i].processMCMASubmission();
-    }
-    for (var j = 0; j < this.MCMFList.length; j++) {
-        _this.MCMFList[j].processMCMFSubmission();
-    }
-    for (var k = 0; k < this.FITBArray.length; k++) {
-        _this.FITBArray[k].checkFITBStorage();
+    for (var i = 0; i < this.renderedQuestionArray.length; i++) {
+        _this.renderedQuestionArray[i].processTimedSubmission();
     }
     if (!this.showFeedback) {
         this.hideTimedFeedback();
@@ -393,38 +367,12 @@ Timed.prototype.hideTimedFeedback = function () {
 };
 
 Timed.prototype.checkScore = function () {
-    var _this = this;
-
     // Gets the score of each MCMA problem
-    for (var i = 0; i < this.MCMAList.length; i++) {
-        var correctMCMA = _this.MCMAList[i].checkCorrectTimedMCMA();
-        if (correctMCMA) {
+    for (var i = 0; i < this.renderedQuestionArray.length; i++) {
+        var correct = this.renderedQuestionArray[i].checkCorrectTimed();
+        if (correct) {
             this.score++;
-        } else if (correctMCMA == null) {
-            this.skipped++;
-        } else {
-            this.incorrect++;
-        }
-    }
-
-    // Gets the score of each MCMF problem
-    for (var j = 0; j < this.MCMFList.length; j++) {
-        var correctMCMF = _this.MCMFList[j].checkCorrectTimedMCMF();
-        if (correctMCMF) {
-            this.score++;
-        } else if (correctMCMF == null) {
-            this.skipped++;
-        } else {
-            this.incorrect++;
-        }
-    }
-
-    // Gets the score of each FITB problem
-    for (var k = 0; k < this.FITBArray.length; k++) {
-        var correctFITB = _this.FITBArray[k].checkCorrectTimedFITB();
-        if (correctFITB) {
-            this.score++;
-        } else if (correctFITB == null) {
+        } else if (correct === null) {
             this.skipped++;
         } else {
             this.incorrect++;
@@ -453,7 +401,7 @@ Timed.prototype.logScore = function () {
 Timed.prototype.displayScore = function () {
     if (this.showResults) {
         var scoreString = "Num Correct: " + this.score + " Num Wrong: " + this.incorrect + " Num Skipped: " + this.skipped;
-        var numQuestions = this.MCMAList.length + this.MCMFList.length + this.FITBArray.length;
+        var numQuestions = this.renderedQuestionArray.length;
         var percentCorrect = (this.score / numQuestions) * 100;
         scoreString += "    Percent Correct: " + percentCorrect + "%";
         $(this.scoreDiv).text(scoreString);

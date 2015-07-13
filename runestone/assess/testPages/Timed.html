@@ -31,7 +31,7 @@
 
 <body>
 	<ul data-component="timedAssessment" id="timed_1">
-		<ul data-component="multiplechoice"  data-multipleanswers="true" data-timed data-random id="question_1">
+		<ul data-component="multiplechoice"  data-multipleanswers="true" data-random id="question_1">
 			The Question can go right here.
 			<li data-component="answer" id="123" >Answer One</li>
 			<li data-component="feedback" for="123">Feedback for One</li>
@@ -43,7 +43,7 @@
 			<li data-component="feedback" for="789">Feedback for Three</li>
 		</ul>
 
-		<ul data-component="multiplechoice" data-timed id="question_2">
+		<ul data-component="multiplechoice" id="question_2">
 			The Question can go right here.
 			<li data-component="answer" id="123" >Answer One</li>
 			<li data-component="feedback" for="123">Feedback for One</li>
@@ -55,12 +55,12 @@
 			<li data-component="feedback" for="789">Feedback for Three</li>
 		</ul>
 
-	<p data-component="fillintheblank" data-casei="false" data-timed id="fill1412" >
+	<p data-component="fillintheblank" data-casei="false" id="fill1412" >
 
-	        <span data-blank>Give me a string that has an 'e' in it. Now.<span data-answer id="blank2_answer">e</span>
+	        <span data-blank>Give me a string that has an 'e' in it. Now.<span data-answer id="blank2_answer">z</span>
 
-	        <span data-feedback="regex" id="feedback1">f</span>
-	        <span data-feedback="text" for="feedback1">Oops</span>
+	        <span data-feedback="regex" id="feedback1">\\bScrew\ you\\b</span>
+	        <span data-feedback="text" for="feedback1">Watch your mouth</span>
 
 	        <span data-feedback="regex" id="feedback2">.*</span>
 	        <span data-feedback="text" for="feedback2">There's no e there!</span>

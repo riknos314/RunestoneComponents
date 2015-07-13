@@ -118,3 +118,19 @@ TimedMC.prototype.checkCorrectTimedMCMA = function () {
 TimedMC.prototype.checkCorrectTimedMCMF = function () {
     return this.correct;
 };
+
+TimedMC.prototype.checkCorrectTimed = function () {
+    if (this.multipleanswers) {
+        return this.checkCorrectTimedMCMA();
+    } else {
+        return this.checkCorrectTimedMCMF();
+    }
+};
+
+TimedMC.prototype.processTimedSubmission = function () {
+    if (this.multipleanswers) {
+        this.processMCMASubmission();
+    } else {
+        this.processMCMFSubmission();
+    }
+};

@@ -34,7 +34,11 @@ TimedFITB.prototype.renderTimedIcon = function (component) {
     $(component).prepend(timeIconDiv);
 };
 
-TimedFITB.prototype.checkCorrectTimedFITB = function () {
+TimedFITB.prototype.checkCorrectTimed = function () {
     // Returns if the question was correct.    Used for timed assessment grading.
     return this.correct;
+};
+
+TimedFITB.prototype.processTimedSubmission = function () {
+    this.checkFITBStorage();
 };

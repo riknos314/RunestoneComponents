@@ -83,12 +83,10 @@ FITB.prototype.populateCorrectAnswerArray = function () {
 };
 FITB.prototype.populateQuestionArray = function () {
     for (var i = 0; i < this.children.length; i++) {
-        var firstAnswerId = null;
         for (var j = 0; j < this.children[i].childNodes.length; j++) {
             if ($(this.children[i].childNodes[j]).is("[data-answer]")) {
-                firstAnswerId = this.children[i].childNodes[j].id;
+                var delimiter = this.children[i].childNodes[j].outerHTML;
 
-                var delimiter = document.getElementById(firstAnswerId).outerHTML;
                 var fulltext = $(this.children[i]).html();
                 var temp = fulltext.split(delimiter);
                 this.questionArray.push(temp[0]);
@@ -106,17 +104,20 @@ FITB.prototype.populateFeedbackArray = function () {
             if ($(this.children[i].childNodes[j]).is("[data-feedback=text]")) {
 
                 AnswerNodeList.push(this.children[i].childNodes[j]);
+                for (var k = 0; k < this.children[i].childNodes.length; k++) {
+                    if ($(this.children[i].childNodes[k]).is("[data-feedback=regex]")) {
+                        if ($(this.children[i].childNodes[j]).attr("for") === this.children[i].childNodes[k].id) {
+                            var tempArr = [];
+                            tempArr.push(this.children[i].childNodes[k].innerHTML.replace(/\\\\/g, "\\"));
+                            tempArr.push(this.children[i].childNodes[j].innerHTML);
+                            tmpContainArr.push(tempArr);
+                            break;
+                        }
+                    }
+                }
             }
         }
 
-        for (var j = 0; j < AnswerNodeList.length; j++) {
-            var tempArr = [];
-            var tempFor = $(AnswerNodeList[j]).attr("for");
-            var tempRegEx = document.getElementById(tempFor).innerHTML.replace(/\\\\/g,"\\");
-            tempArr.push(tempRegEx);
-            tempArr.push(AnswerNodeList[j].innerHTML);
-            tmpContainArr.push(tempArr);
-        }
         this.feedbackArray.push(tmpContainArr);
 
     }
