@@ -2,18 +2,6 @@
  * Created by bmiller on 3/19/15.
  */
 
-function RunestoneBase() {
-
-}
-
-RunestoneBase.prototype.logBookEvent = function(info) {
-    console.log("logging event " + this.divid);
-};
-
-RunestoneBase.prototype.logRunEvent = function(info) {
-    console.log("running " + this.divid);
-};
-
 var edList = {};
 
 ActiveCode.prototype = new RunestoneBase();

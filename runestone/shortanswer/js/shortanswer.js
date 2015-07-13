@@ -9,16 +9,6 @@
 ===                7/2/15                ===
 ==========================================*/
 
-function RunestoneBase () {   // Basic parent stuff
-
-}
-RunestoneBase.prototype.logBookEvent = function (info) {
-    console.log("logging event " + this.divid);
-};
-RunestoneBase.prototype.logRunEvent = function (info) {
-    console.log("running " + this.divid);
-};
-
 var saList = {};    // Dictionary that contains all instances of shortanswer objects
 
 

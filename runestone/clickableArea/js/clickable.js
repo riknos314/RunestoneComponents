@@ -8,18 +8,8 @@
 ===           Isaiah Mayerchak           ===
 ===                7/1/15                ===
 ==========================================*/
-function RunestoneBase () {   // Basic parent stuff
 
-}
-RunestoneBase.prototype.logBookEvent = function (info) {
-    console.log("logging event " + this.divid);
-};
-RunestoneBase.prototype.logRunEvent = function (info) {
-    console.log("running " + this.divid);
-};
-
-var CAList = {};    // Dictionary that contains all instances of ClickableArea objects
-
+var CAList = {};    // Object that contains all instances of ClickableArea objects
 
 function ClickableArea (opts) {
     if (opts) {
