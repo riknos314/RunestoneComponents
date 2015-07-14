@@ -311,34 +311,36 @@ It currently needs at least 4 directives to function: starttimer, revealquestion
 
         Under which of these conditions will a sequential search be faster than a binary search?
 
-    .. mchoice:: 152414d
+    .. mchoice:: questiontimed2
         :timed:
+        :random:
         :multiple_answers:
-        :correct: a, c
-        :answer_a: Answer a
-        :answer_b: Answer b
-        :answer_c: Answer c
-        :feedback_a: Feedback for a
-        :feedback_b: Feedback for b
-        :feedback_c: Feedback for c
+        :correct: a,b,d
+        :answer_a: Red
+        :answer_b: Blue
+        :answer_c: Brown
+        :answer_d: Indigo
+        :feedback_a: Yes, red is definitely one of the colors.
+        :feedback_b: Blue is correct!
+        :feedback_c: Remember ROY G BIV!
+        :feedback_d: Yes, indigo is also in the rainbow!
 
-        Here is the question...
+        Which of these are colors of the rainbow?
 
     .. fillintheblank:: fill1412
         :timed:
 
-        .. blank:: blank21
-            :correct: \\b31\\b
-            :feedback1: ("\\b25\\b", "Octal is not the same as decimal")
-            :feedback2: (".*", "You don't know your octal numbers...")
+        .. blank:: blank1345
+            :correct: \\bred\\b
+            :feedback1: (".*", "Try 'red'")
 
-            What is the octal of 25? Don't say 25.
+            Fill in the blanks to make the following sentence: "The red car drove away" The
 
-        .. blank:: blank123
-            :correct: 12
-            :feedback1: (".*", "There's no 12 in that string!")
+        .. blank:: blank52532
+            :correct: \\baway\\b
+            :feedback1: (".*", "Try 'away'")
 
-            Please write down 12.
+            car drove
 
 
 Unit Tests for Code
@@ -404,6 +406,37 @@ Fix the following code so that it always correctly adds two numbers.
    myTests().main()
 
 
+Drag N Drop
+------------------
+
+You can add a Drag n drop matching question to your page simply by defining the pairs of matchable elements within a dragndrop directive.
+The order of draggable elements and their respective dropzones will be randomized so the pairs aren't always side-by-side.
+
+.. dragndrop:: dnd1
+    :feedback: This is feedback.
+    :match_1: Drag me to 1|||I am 1
+    :match_2: Drag me to 2|||I am 2
+    :match_3: Drag me to 3|||I am 3
+
+    This is a drag n drop question.
+
+Clickable Area
+------------------
+
+Clickable area is another type of assess question you can use. All you need to do is write the code you wish to be in the question, and wrap the parts that you
+would like to be clickable in either a click-correct tag or a click-incorrect tag. The students can click on all elements you defined as being clickable, and
+will be evaluated once they click the 'Check Me' button.
+
+.. clickablearea:: click1
+    :question: Click on all assignment statements.
+    :feedback: Remember, the operator '=' is used for assignment.
+
+    :click-incorrect:def main()::endclick:
+        :click-correct:x = 4:endclick:
+        for i in range(5):
+            :click-correct:y = i:endclick:
+            :click-incorrect:if y > 2::endclick:
+                print(y)
 
 
 Disqus Comment Box
@@ -419,7 +452,7 @@ A comment box allowing users to add comments and start discussions can be added.
 Tabbed Question
 ---------------
 
-Any of the existing question types can be placed in a tabbed exhibit-style question. This may be used to provide an possible answer or a Disqus discussion box specifically related to a certain question.
+Any of the existing components can be placed in a tabbed exhibit-style question. This may be used to provide an possible answer or a Disqus discussion box specifically related to a certain question.
 
 .. tabbed:: exercise1
 

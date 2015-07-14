@@ -19,6 +19,7 @@ __author__ = 'isaiahmayerchak'
 from docutils import nodes
 from docutils.parsers.rst import directives
 from docutils.parsers.rst import Directive
+from .textfield import *
 
 
 def setup(app):
@@ -30,6 +31,8 @@ def setup(app):
     app.add_javascript('codemirror.js')
     app.add_javascript('python.js')
     app.add_javascript('activecode.js')
+
+    app.add_role('textfield', textfield_role)
 
     app.add_node(ActivcodeNode, html=(visit_ac_node, depart_ac_node))
 
