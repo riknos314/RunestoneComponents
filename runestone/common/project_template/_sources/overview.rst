@@ -286,17 +286,17 @@ next line executed.
 Timed Exam Questions
 ---------------------
 
-You can add a timed exam of multiple-choice questions that the user can only take once.  All the feedback will be shown after the time is up or after the user has clicked the "Submit Answers" button at the end of the timed exam.  To start the timed exam click on the "Start" button.  This will also start the countdown of the time remaining.  You can pause the timer by clicking on the "Pause" button and start it again by clicking on the "Resume" button.  When you pause the timed exam the questions will be hidden.  There is also a clock icon that will display the time remaining when the reader hovers over it.
+You can add a timed exam of multiple-choice/fill-in-the-blank questions that the user can only take once.  All the feedback will be shown after the time is up or after the user has clicked the "Submit Answers" button at the end of the timed exam.  To start the timed exam click on the "Start" button.  This will also start the countdown of the time remaining.  You can pause the timer by clicking on the "Pause" button and start it again by clicking on the "Resume" button.  When you pause the timed exam the questions will be hidden.  There is also a clock icon that will display the time remaining when the reader hovers over it.
 
 Please note that you can currently only have one timed exam per html page.
 
-It currently needs at least 4 directives to function: starttimer, revealquestions, timedmchoicemf, and finishtimer.  You can have as many timedmchoicemf as you want.  The time is specified in minutes using the :duration option in starttimer.
+All you need is the timed directive--you can specify the time limit (in minutes), and there are options for no feedback, no results, and no time limit (in which case it will keep track of the amount of time taken to complete the exam).
+A timed exam can hold any number of multiple choice or fill in the blank questions.
 
 .. timed:: timed1
     :timelimit: 10
 
     .. mchoice:: questiontimed1_1
-        :timed:
         :answer_a: The value you are searching for is the first element in the array.
         :answer_b: The value you are searching for is the last element in the array
         :answer_c: The value you are searching for is in the middle of the array.
@@ -312,7 +312,6 @@ It currently needs at least 4 directives to function: starttimer, revealquestion
         Under which of these conditions will a sequential search be faster than a binary search?
 
     .. mchoice:: questiontimed2
-        :timed:
         :random:
         :multiple_answers:
         :correct: a,b,d
@@ -328,7 +327,6 @@ It currently needs at least 4 directives to function: starttimer, revealquestion
         Which of these are colors of the rainbow?
 
     .. fillintheblank:: fill1412
-        :timed:
 
         .. blank:: blank1345
             :correct: \\bred\\b
