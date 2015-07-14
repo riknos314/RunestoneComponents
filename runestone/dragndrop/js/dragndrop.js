@@ -9,16 +9,6 @@
 ===                7/6/15                ===
 ==========================================*/
 
-function RunestoneBase () {   // Basic parent stuff
-
-}
-RunestoneBase.prototype.logBookEvent = function (info) {
-    console.log("logging event " + this.divid);
-};
-RunestoneBase.prototype.logRunEvent = function (info) {
-    console.log("running " + this.divid);
-};
-
 var ddList = {};    // Dictionary that contains all instances of dragndrop objects
 
 
