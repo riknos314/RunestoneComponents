@@ -126,7 +126,7 @@ Poll.prototype.submitPoll = function() {
     var data = {};
     data.div_id = this.divid;
     data.course = eBookConfig.course;
-    jQuery.get(eBookConfig.ajaxURL+"getpollresults", data, this.showPollResults());
+    jQuery.get(eBookConfig.ajaxURL+"getpollresults", data, this.showPollResults);
 };
 
 Poll.prototype.showPollResults = function(data) {
@@ -161,7 +161,10 @@ Poll.prototype.checkPollStorage = function() {
     var _this = this;
     var len = localStorage.length;
     if (len > 0) { //If the poll has already been completed, show the results
-        jQuery.get(eBookConfig.ajaxURL+"getpollresults", data, this.showPollResults());
+        var data = {};
+        data.div_id = this.divid;
+        data.course = eBookConfig.course;
+        jQuery.get(eBookConfig.ajaxURL+"getpollresults", data, this.showPollResults);
     }
 };
 
