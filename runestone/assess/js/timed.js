@@ -150,6 +150,10 @@ Timed.prototype.renderNavControls = function () {
         this.currentQuestionIndex--;
         this.renderTimedQuestion();
         this.ensureButtonSafety();
+        for (var i = 0; i < _this.pagNavList.childNodes.length; i++) {
+            $(this.pagNavList.childNodes[i]).removeClass("active");
+        }
+        $(this.pagNavList.childNodes[this.currentQuestionIndex + 1]).addClass("active");
     }.bind(this), false);
     this.leftContainer.appendChild(this.leftNavButton);
     this.pagNavList.appendChild(this.leftContainer);
@@ -158,6 +162,9 @@ Timed.prototype.renderNavControls = function () {
         var tmpA = document.createElement("a");
         tmpA.innerHTML = i + 1;
         $(tmpA).css("cursor", "pointer");
+        if (i === 0) {
+            $(tmpLi).addClass("active");
+        }
         tmpA.onclick = function () {
             _this.currentQuestionIndex = this.innerHTML - 1;
             _this.renderTimedQuestion();
@@ -182,6 +189,10 @@ Timed.prototype.renderNavControls = function () {
         this.currentQuestionIndex++;
         this.renderTimedQuestion();
         this.ensureButtonSafety();
+        for (var i = 0; i < _this.pagNavList.childNodes.length; i++) {
+            $(this.pagNavList.childNodes[i]).removeClass("active");
+        }
+        $(this.pagNavList.childNodes[this.currentQuestionIndex + 1]).addClass("active");
     }.bind(this), false);
     this.rightContainer.appendChild(this.rightNavButton);
     this.pagNavList.appendChild(this.rightContainer);
@@ -309,14 +320,22 @@ Timed.prototype.showTime = function () { // displays the timer value
     if (secs < 10) {
         secsString = "0" + secs;
     }
-    var begining = "Time Remaining    ";
+    var beginning = "Time Remaining    ";
     if (!this.limitedTime) {
-        begining = "Time Taken    ";
+        beginning = "Time Taken    ";
     }
-    var timeString =  begining + minsString + ":" + secsString;
+    var timeString =  beginning + minsString + ":" + secsString;
 
-    if (mins <= 0 && secs <= 0) {
-        timeString = "Finished";
+    if (this.done || this.finished) {
+        var minutes = Math.floor(this.timeTaken / 60);
+        var seconds = Math.floor(this.timeTaken % 60);
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+        if (seconds < 10) {
+            seconds = "0" + seconds;
+        }
+        timeString = "Time taken: " + minutes + ":" + seconds;
     }
 
     this.timerContainer.innerHTML = timeString;
@@ -406,7 +425,6 @@ Timed.prototype.tookTimedExam = function () {
 
 Timed.prototype.finishAssessment = function () {
     this.findTimeTaken();
-    this.timeLimit = 0;
     this.running = 0;
     this.done = 1;
     this.taken = 1;
@@ -429,13 +447,21 @@ Timed.prototype.submitTimedProblems = function () {
 };
 
 Timed.prototype.hideTimedFeedback = function () {
-    $(".eachFeedback").css("display", "none");
-    for (var i = 0; i < this.FITBArray.length; i++) {
-        var blanks = this.FITBArray[i].blankArray;
-        for (var j = 0; j < blanks.length; j++) {
-            (blanks[j]).removeClass("input-validation-error");
+    for (var i = 0; i < this.renderedQuestionArray.length; i++) {
+        var blanks = this.renderedQuestionArray[i].blankArray;
+        if (blanks !== undefined) {
+            for (var j = 0; j < blanks.length; j++) {
+                $(blanks[j]).removeClass("input-validation-error");
+            }
+            this.renderedQuestionArray[i].feedBackDiv.style.display = "none";
         }
-        this.FITBArray[i].feedBackDiv.style.display = "none";
+        var feedbacks = this.renderedQuestionArray[i].feedBackEachArray;
+        if (feedbacks !== undefined) {
+            for (var j = 0; j < feedbacks.length; j++) {
+                $(feedbacks[j]).hide();
+            }
+        }
+
     }
 };
 
