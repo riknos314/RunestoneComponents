@@ -133,21 +133,21 @@ FITB.prototype.createFITBElement = function () {
     this.renderFITBFeedbackDiv();
 
     // replaces the intermediate HTML for this component with the rendered HTML of this component
-    $(this.origElem).replaceWith(this.inputDiv);
+    $(this.origElem).replaceWith(this.containerDiv);
 };
 
 
 FITB.prototype.renderFITBInput = function () {
     // creates the blank and appends it to the parent div
-    this.inputDiv = document.createElement("div");
-    $(this.inputDiv).addClass("alert alert-warning");
-    this.inputDiv.id = this.divid;
+    this.containerDiv = document.createElement("div");
+    $(this.containerDiv).addClass("alert alert-warning");
+    this.containerDiv.id = this.divid;
 
     this.blankArray = [];
     for (var i = 0; i < this.children.length; i++) {
         var question = document.createElement("span");
         question.innerHTML = this.questionArray[i];
-        this.inputDiv.appendChild(question);
+        this.containerDiv.appendChild(question);
 
         var blank = document.createElement("input");
         $(blank).attr({
@@ -155,14 +155,13 @@ FITB.prototype.renderFITBInput = function () {
             "id": this.divid + "_blank" + i,
             "class": "form form-control selectwidthauto"
         });
-        this.inputDiv.appendChild(blank);
+        this.containerDiv.appendChild(blank);
         this.blankArray.push(blank);
     }
 
 };
 
 FITB.prototype.renderFITBButtons = function () {
-    var _this = this;
     this.submitButton = document.createElement("button");    // Check me button
     this.submitButton.textContent = "Check Me";
     $(this.submitButton).attr({
@@ -170,8 +169,8 @@ FITB.prototype.renderFITBButtons = function () {
         "name": "do answer"
     });
     this.submitButton.addEventListener("click", function () {
-        _this.checkFITBStorage();
-    }, false);
+        this.checkFITBStorage();
+    }.bind(this), false);
     this.compareButton = document.createElement("button");    // Compare me button
     $(this.compareButton).attr({
         "class": "btn btn-default",
@@ -181,20 +180,20 @@ FITB.prototype.renderFITBButtons = function () {
     });
     this.compareButton.textContent = "Compare Me";
     this.compareButton.addEventListener("click", function () {
-        _this.compareFITBAnswers();
-    }, false);
-    this.inputDiv.appendChild(document.createElement("br"));
-    this.inputDiv.appendChild(document.createElement("br"));
-    this.inputDiv.appendChild(this.submitButton);
-    this.inputDiv.appendChild(this.compareButton);
-    this.inputDiv.appendChild(document.createElement("div"));
+        this.compareFITBAnswers();
+    }.bind(this), false);
+    this.containerDiv.appendChild(document.createElement("br"));
+    this.containerDiv.appendChild(document.createElement("br"));
+    this.containerDiv.appendChild(this.submitButton);
+    this.containerDiv.appendChild(this.compareButton);
+    this.containerDiv.appendChild(document.createElement("div"));
 };
 
 FITB.prototype.renderFITBFeedbackDiv = function () {
     this.feedBackDiv = document.createElement("div");
     this.feedBackDiv.id = this.divid + "_feedback";
-    this.inputDiv.appendChild(document.createElement("br"));
-    this.inputDiv.appendChild(this.feedBackDiv);
+    this.containerDiv.appendChild(document.createElement("br"));
+    this.containerDiv.appendChild(this.feedBackDiv);
 };
 
 /*==============================
