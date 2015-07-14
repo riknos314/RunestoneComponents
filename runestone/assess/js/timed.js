@@ -39,6 +39,10 @@ Timed.prototype.init = function (opts) {
     if ($(this.origElem).is("[data-no-result]")) {
         this.showResults = false;
     }
+    this.random = false;
+    if ($(this.origElem).is("[data-random]")) {
+        this.random = true;
+    }
 
     this.running = 0;
     this.paused = 0;
@@ -255,6 +259,24 @@ Timed.prototype.createRenderedQuestionArray = function () {
             this.renderedQuestionArray.push(newFITB);
         }
     }
+    if (this.random) {
+        this.randomizeRQA();
+    }
+};
+Timed.prototype.randomizeRQA = function () {
+    var currentIndex = this.renderedQuestionArray.length, temporaryValue, randomIndex;
+    // While there remain elements to shuffle...
+    while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        // And swap it with the current element.
+        temporaryValue = this.renderedQuestionArray[currentIndex];
+        this.renderedQuestionArray[currentIndex] = this.renderedQuestionArray[randomIndex];
+        this.renderedQuestionArray[randomIndex] = temporaryValue;
+
+    }
+    console.log(this.renderedQuestionArray);
 };
 
 Timed.prototype.renderTimedQuestion = function () {
