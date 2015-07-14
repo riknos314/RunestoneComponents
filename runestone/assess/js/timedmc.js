@@ -41,22 +41,21 @@ TimedMC.prototype.renderMCMFFeedback = function (whatever, whateverr) {
 };
 
 TimedMC.prototype.feedbackTimedMC = function () {
-    var _this = this;
     for (var i = 0; i < this.indexArray.length; i++) {
         var tmpindex = this.indexArray[i];
-        var feedbackobj = $("#" + _this.divid + "_eachFeedback_" + tmpindex);
-        $(feedbackobj).text(_this.feedbackList[i]);
-        var tmpid = _this.answerList[tmpindex].id;
-        if (_this.correctList.indexOf(tmpid) >= 0) {
-            feedbackobj[0].classList.add("alert", "alert-success");
+        $(this.feedBackEachArray[i]).text(this.feedbackList[i]);
+        var tmpid = this.answerList[tmpindex].id;
+        if (this.correctList.indexOf(tmpid) >= 0) {
+            this.feedBackEachArray[i].classList.add("alert", "alert-success");
         } else {
-            feedbackobj[0].classList.add("alert", "alert-danger");
+            this.feedBackEachArray[i].classList.add("alert", "alert-danger");
         }
     }
 };
 
 TimedMC.prototype.renderMCFormOpts = function () {
     this.optionArray = []; // array with an object for each option containing the input and label for that option
+    this.feedBackEachArray = [];
     var input_type = "radio";
     if (this.multipleanswers) {
         input_type = "checkbox";
@@ -103,6 +102,7 @@ TimedMC.prototype.renderMCFormOpts = function () {
         var feedBackEach = document.createElement("div");
         feedBackEach.id = this.divid + "_eachFeedback_" + k;
         feedBackEach.classList.add("eachFeedback");
+        this.feedBackEachArray.push(feedBackEach);
         this.optsForm.appendChild(feedBackEach);
     }
 };
