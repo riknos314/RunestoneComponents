@@ -20,7 +20,7 @@ function Timed (opts) {
 
 Timed.prototype.init = function (opts) {
     var orig = opts.orig;
-    this.origElem = orig; // the entire element of this timed assessment and all it"s children
+    this.origElem = orig; // the entire element of this timed assessment and all of its children
     this.divid = orig.id;
     this.children = this.origElem.childNodes;
 
@@ -48,6 +48,7 @@ Timed.prototype.init = function (opts) {
     this.incorrect = 0;
     this.skipped = 0;
 
+    this.currentQuestionIndex = 0;   // Which question is currently displaying on the page
     this.renderedQuestionArray = []; // list of all problems
 
     this.getNewChildren();
@@ -69,8 +70,10 @@ Timed.prototype.renderTimedAssess = function () {
     this.renderContainer();
     this.renderTimer();
     this.renderControlButtons();
-    this.assessDiv.appendChild(this.timedDiv);    // This can"t be appended in renderContainer because then it renders above the timer and control buttons.
+    this.assessDiv.appendChild(this.timedDiv);    // This can't be appended in renderContainer because then it renders above the timer and control buttons.
     this.createRenderedQuestionArray();
+    this.renderTimedQuestion();
+    this.renderNavControls();
     this.renderSubmitButton();
     this.renderFeedbackContainer();
 
@@ -82,18 +85,15 @@ Timed.prototype.renderContainer = function () {
     this.assessDiv = document.createElement("div"); // container for the entire Timed Component
     this.assessDiv.id = this.divid;
     this.timedDiv = document.createElement("div"); // div that will hold the questions for the timed assessment
-    var elementHtml = $(this.origElem).html(); // take all of the tags that will generate the questions
-    //$(this.timedDiv).html(elementHtml); // place those tags in the div
-    for (var i = 0; i < this.newChildren.length; i++) {
-        this.timedDiv.appendChild(this.newChildren[i]);
-    }
+    this.navDiv = document.createElement("div"); // For navigation control
+    $(this.navDiv).attr({"style": "text-align:center"});
+    this.timedDiv.appendChild(this.navDiv);
+    this.switchDiv = document.createElement("div"); // is replaced by the questions
+    this.timedDiv.appendChild(this.switchDiv);
     $(this.timedDiv).attr({ // set the id, and style the div to be hidden
         "id": "timed_Test",
         "style": "display:none"
     });
-    console.log(this.timedDiv.childNodes);
-    //this.newChildren = this.timedDiv.childNodes;    // These are the...
-    // ...components that need to be rendered inside of the timed test
 };
 
 Timed.prototype.renderTimer = function () {
@@ -105,7 +105,6 @@ Timed.prototype.renderTimer = function () {
 };
 
 Timed.prototype.renderControlButtons = function () {
-    var _this = this;
     this.controlDiv = document.createElement("div");
     $(this.controlDiv).attr({
         "id": "controls",
@@ -119,8 +118,8 @@ Timed.prototype.renderControlButtons = function () {
     });
     this.startBtn.textContent = "Start";
     this.startBtn.addEventListener("click", function () {
-        _this.startAssessment();
-    }, false);
+        this.startAssessment();
+    }.bind(this), false);
     $(this.pauseBtn).attr({
         "class": "btn btn-default",
         "id": "pause",
@@ -128,15 +127,69 @@ Timed.prototype.renderControlButtons = function () {
     });
     this.pauseBtn.textContent = "Pause";
     this.pauseBtn.addEventListener("click", function () {
-        _this.pauseAssessment();
-    }, false);
+        this.pauseAssessment();
+    }.bind(this), false);
     this.controlDiv.appendChild(this.startBtn);
     this.controlDiv.appendChild(this.pauseBtn);
     this.assessDiv.appendChild(this.wrapperDiv);
     this.assessDiv.appendChild(this.controlDiv);
 };
-Timed.prototype.renderSubmitButton = function () {
+Timed.prototype.renderNavControls = function () {
     var _this = this;
+    this.pagNavList = document.createElement("ul");
+    $(this.pagNavList).addClass("pagination");
+    this.leftContainer = document.createElement("li");
+    this.leftNavButton = document.createElement("a");
+    this.leftNavButton.innerHTML = "&laquo";
+    $(this.leftNavButton).attr("aria-label", "Previous");
+    $(this.leftNavButton).css("cursor", "pointer");
+    this.leftNavButton.addEventListener("click", function () {
+        if ($(this.leftContainer).hasClass("disabled")) {
+            return;
+        }
+        this.currentQuestionIndex--;
+        this.renderTimedQuestion();
+        this.ensureButtonSafety();
+    }.bind(this), false);
+    this.leftContainer.appendChild(this.leftNavButton);
+    this.pagNavList.appendChild(this.leftContainer);
+    for (var i = 0; i < this.renderedQuestionArray.length; i++) {
+        var tmpLi = document.createElement("li");
+        var tmpA = document.createElement("a");
+        tmpA.innerHTML = i + 1;
+        $(tmpA).css("cursor", "pointer");
+        tmpA.onclick = function () {
+            _this.currentQuestionIndex = this.innerHTML - 1;
+            _this.renderTimedQuestion();
+            _this.ensureButtonSafety();
+            for (var i = 0; i < _this.pagNavList.childNodes.length; i++) {
+                $(_this.pagNavList.childNodes[i]).removeClass("active");
+            }
+            $(this.parentNode).addClass("active");
+        };
+        tmpLi.appendChild(tmpA);
+        this.pagNavList.appendChild(tmpLi);
+    }
+    this.rightContainer = document.createElement("li");
+    this.rightNavButton = document.createElement("a");
+    $(this.rightNavButton).attr("aria-label", "Next");
+    this.rightNavButton.innerHTML = "&raquo";
+    $(this.rightNavButton).css("cursor", "pointer");
+    this.rightNavButton.addEventListener("click", function () {
+        if ($(this.rightContainer).hasClass("disabled")) {
+            return;
+        }
+        this.currentQuestionIndex++;
+        this.renderTimedQuestion();
+        this.ensureButtonSafety();
+    }.bind(this), false);
+    this.rightContainer.appendChild(this.rightNavButton);
+    this.pagNavList.appendChild(this.rightContainer);
+    this.ensureButtonSafety();
+    this.navDiv.appendChild(this.pagNavList);
+
+};
+Timed.prototype.renderSubmitButton = function () {
     this.buttonContainer = document.createElement("div");
     $(this.buttonContainer).attr({"style": "text-align:center"});
     this.finishButton = document.createElement("button");
@@ -146,10 +199,30 @@ Timed.prototype.renderSubmitButton = function () {
     });
     this.finishButton.textContent = "Submit answers";
     this.finishButton.addEventListener("click", function () {
-        _this.finishAssessment();
-    }, false);
+        this.finishAssessment();
+    }.bind(this), false);
+
     this.buttonContainer.appendChild(this.finishButton);
     this.timedDiv.appendChild(this.buttonContainer);
+};
+
+Timed.prototype.ensureButtonSafety = function () {  // Makes sure that user can't navigate past the range of this.renderedQuestionArray
+    if (this.currentQuestionIndex === 0) {
+        if (this.renderedQuestionArray.length != 1) {
+            $(this.rightContainer).removeClass("disabled");
+        }
+        $(this.leftContainer).addClass("disabled");
+    }
+    if (this.currentQuestionIndex >= (this.renderedQuestionArray.length-1)) {
+        if (this.renderedQuestionArray.length != 1) {
+            $(this.leftContainer).removeClass("disabled");
+        }
+        $(this.rightContainer).addClass("disabled");
+    }
+    if (this.currentQuestionIndex > 0 && this.currentQuestionIndex < this.renderedQuestionArray.length-1) {
+        $(this.rightContainer).removeClass("disabled");
+        $(this.leftContainer).removeClass("disabled");
+    }
 };
 
 Timed.prototype.renderFeedbackContainer = function () {
@@ -160,18 +233,22 @@ Timed.prototype.renderFeedbackContainer = function () {
 };
 
 Timed.prototype.createRenderedQuestionArray = function () {
-    // this finds all the MCMF questions in this timed assessment and calls their constructor method
-    // Also adds them to MCMFList
-    var _this = this;
+    // this finds all the assess questions in this timed assessment and calls their constructor method
+    // Also adds them to this.renderedQuestionArray
     for (var i = 0; i < this.newChildren.length; i++) {
         var tmpChild = this.newChildren[i];
         if ($(tmpChild).is("[data-component=multiplechoice]")) {
-            _this.renderedQuestionArray.push(new TimedMC({"orig": tmpChild}));
+            this.renderedQuestionArray.push(new TimedMC({"orig": tmpChild}));
         } else if ($(tmpChild).is("[data-component=fillintheblank]")) {
             var newFITB = new TimedFITB({"orig": tmpChild});
-            _this.renderedQuestionArray.push(newFITB);
+            this.renderedQuestionArray.push(newFITB);
         }
     }
+};
+
+Timed.prototype.renderTimedQuestion = function () {
+    $(this.switchDiv).replaceWith(this.renderedQuestionArray[this.currentQuestionIndex].containerDiv);
+    this.switchDiv = this.renderedQuestionArray[this.currentQuestionIndex].containerDiv;
 };
 
 
@@ -180,15 +257,14 @@ Timed.prototype.createRenderedQuestionArray = function () {
 =================================*/
 
 Timed.prototype.startAssessment = function () {
-    var _this = this;
     this.tookTimedExam();
-    if (!_this.taken) {
+    if (!this.taken) {
         $(this.startBtn).attr("disabled", true);
         $(this.pauseBtn).attr("disabled", false);
-        if (_this.running === 0 && _this.paused === 0) {
-            _this.running = 1;
+        if (this.running === 0 && this.paused === 0) {
+            this.running = 1;
             $(this.timedDiv).show();
-            _this.increment();
+            this.increment();
             logBookEvent({"event": "timedExam", "act": "start", "div_id": this.divid});
             localStorage.setItem(eBookConfig.email + ":" + this.divid, "started");
         }
@@ -196,11 +272,11 @@ Timed.prototype.startAssessment = function () {
         $(this.startBtn).attr("disabled", true);
         $(this.pauseBtn).attr("disabled", true);
         $(this.finishButton).attr("disabled", true);
-        _this.running = 0;
-        _this.done = 1;
+        this.running = 0;
+        this.done = 1;
         $(this.timedDiv).show();
         $(this.time).text("Already completed");
-        _this.submitTimedProblems();
+        this.submitTimedProblems();
     }
 };
 
@@ -253,28 +329,27 @@ Timed.prototype.showTime = function () { // displays the timer value
 Timed.prototype.increment = function () { // increments the timer
     // if running (not paused) and not taken
     if (this.running === 1 && !this.taken) {
-        var _this = this;
         setTimeout(function () {
-            if (_this.limitedTime) {  // If there's a time limit, count down to 0
-                _this.timeLimit--;
+            if (this.limitedTime) {  // If there's a time limit, count down to 0
+                this.timeLimit--;
             } else {
-                _this.timeLimit++; // Else count up to keep track of how long it took to complete
+                this.timeLimit++; // Else count up to keep track of how long it took to complete
             }
-            _this.showTime(_this.timeLimit);
-            if (_this.timeLimit > 0) {
-                _this.increment();
+            this.showTime();
+            if (this.timeLimit > 0) {
+                this.increment();
                 // ran out of time
             } else {
                 $(this.startBtn).attr({"disabled": "true"});
                 $(this.finishButton).attr({"disabled": "true"});
-                _this.running = 0;
-                _this.done = 1;
-                if (_this.taken === 0) {
-                    _this.taken = 1;
-                    _this.finishAssessment();
+                this.running = 0;
+                this.done = 1;
+                if (this.taken === 0) {
+                    this.taken = 1;
+                    this.finishAssessment();
                 }
             }
-        }, 1000);
+        }.bind(this), 1000);
     }
 };
 
@@ -317,16 +392,15 @@ Timed.prototype.tookTimedExam = function () {
     });
 
     var len = localStorage.length;
-    var _this = this;
     if (len > 0) {
         if (localStorage.getItem(eBookConfig.email + ":" + this.divid) !== null) {
-            _this.taken = 1;
+            this.taken = 1;
 
-        }else {
-            _this.taken = 0;
+        } else {
+            this.taken = 0;
         }
-    }else {
-        _this.taken = 0;
+    } else {
+        this.taken = 0;
     }
 };
 
@@ -346,9 +420,8 @@ Timed.prototype.finishAssessment = function () {
 };
 
 Timed.prototype.submitTimedProblems = function () {
-    var _this = this;
     for (var i = 0; i < this.renderedQuestionArray.length; i++) {
-        _this.renderedQuestionArray[i].processTimedSubmission();
+        this.renderedQuestionArray[i].processTimedSubmission();
     }
     if (!this.showFeedback) {
         this.hideTimedFeedback();
@@ -367,7 +440,7 @@ Timed.prototype.hideTimedFeedback = function () {
 };
 
 Timed.prototype.checkScore = function () {
-    // Gets the score of each MCMA problem
+    // Gets the score of each problem
     for (var i = 0; i < this.renderedQuestionArray.length; i++) {
         var correct = this.renderedQuestionArray[i].checkCorrectTimed();
         if (correct) {

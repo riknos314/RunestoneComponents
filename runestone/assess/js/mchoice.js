@@ -32,7 +32,6 @@ function MultipleChoice (opts) {
 ===================================*/
 
 MultipleChoice.prototype.init = function (opts) {
-    console.log(opts.orig);
     var orig = opts.orig;    // entire <ul> element
     this.origElem = orig;
 
@@ -87,11 +86,10 @@ MultipleChoice.prototype.findAnswers = function () {
     // Creates answer objects and pushes them to answerList
     // format: ID, Correct bool, Content (text)
 
-    var _this = this;
     var ChildAnswerList = [];
-    for (var i = 0; i < _this.children.length; i++) {
-        if ($(_this.children[i]).is("[data-component=answer]")) {
-            ChildAnswerList.push(_this.children[i]);
+    for (var i = 0; i < this.children.length; i++) {
+        if ($(this.children[i]).is("[data-component=answer]")) {
+            ChildAnswerList.push(this.children[i]);
         }
     }
     for (var j = 0; j < ChildAnswerList.length; j++) {
@@ -102,15 +100,14 @@ MultipleChoice.prototype.findAnswers = function () {
         }
         var answer_text = $(ChildAnswerList[j]).text();
         var answer_object = {id: answer_id, correct: is_correct, content: answer_text};
-        _this.answerList.push(answer_object);
+        this.answerList.push(answer_object);
     }
 };
 
 MultipleChoice.prototype.findFeedbacks = function () {
-    var _this = this;
     for (var i = 0; i < this.children.length; i++) {
-        if ($(_this.children[i]).is("[data-component=feedback]")) {
-            _this.feedbackList.push(_this.children[i].innerHTML);
+        if ($(this.children[i]).is("[data-component=feedback]")) {
+            this.feedbackList.push(this.children[i].innerHTML);
         }
     }
 };
@@ -136,14 +133,14 @@ MultipleChoice.prototype.createMCForm = function () {
     this.renderMCfeedbackDiv();
 
     // replaces intermediate HTML with rendered HTML
-    $(this.origElem).replaceWith(this.MCContainer);
+    $(this.origElem).replaceWith(this.containerDiv);
 };
 
 MultipleChoice.prototype.renderMCContainer = function () {
-    this.MCContainer = document.createElement("div");
-    $(this.MCContainer).text(this.question);
-    $(this.MCContainer).addClass("alert alert-warning");
-    this.MCContainer.id = this.divid;
+    this.containerDiv = document.createElement("div");
+    $(this.containerDiv).text(this.question);
+    $(this.containerDiv).addClass("alert alert-warning");
+    this.containerDiv.id = this.divid;
 };
 
 MultipleChoice.prototype.renderMCForm = function () {
@@ -161,7 +158,7 @@ MultipleChoice.prototype.renderMCForm = function () {
     this.renderMCFormButtons();
 
     // Append the form to the container
-    this.MCContainer.appendChild(this.optsForm);
+    this.containerDiv.appendChild(this.optsForm);
 };
 
 MultipleChoice.prototype.renderMCFormOpts = function () {
@@ -214,8 +211,6 @@ MultipleChoice.prototype.renderMCFormOpts = function () {
 };
 
 MultipleChoice.prototype.renderMCFormButtons = function () {
-    var _this = this;    // used for defining onclick functions because of the different scope
-
     // Create submit button
     this.submitButton = document.createElement("button");
     this.submitButton.textContent = "Check Me";
@@ -225,13 +220,13 @@ MultipleChoice.prototype.renderMCFormButtons = function () {
     });
     if (this.multipleanswers) {
         this.submitButton.addEventListener("click", function () {
-            _this.processMCMASubmission();
-        }, false);
+            this.processMCMASubmission();
+        }.bind(this), false);
     } else {
         this.submitButton.addEventListener("click", function (ev) {
             ev.preventDefault();
-            _this.processMCMFSubmission();
-        }, false);
+            this.processMCMFSubmission();
+        }.bind(this), false);
     } // end else
     this.optsForm.appendChild(this.submitButton);
 
@@ -245,16 +240,16 @@ MultipleChoice.prototype.renderMCFormButtons = function () {
     });
     this.compareButton.textContent = "Compare me";
     this.compareButton.addEventListener("click", function () {
-        _this.compareAnswers(_this.divid);
-    }, false);
+        this.compareAnswers(this.divid);
+    }.bind(this), false);
     this.optsForm.appendChild(this.compareButton);
 };
 
 MultipleChoice.prototype.renderMCfeedbackDiv = function () {
     this.feedBackDiv = document.createElement("div");
     this.feedBackDiv.id = this.divid + "_feedback";
-    this.MCContainer.appendChild(document.createElement("br"));
-    this.MCContainer.appendChild(this.feedBackDiv);
+    this.containerDiv.appendChild(document.createElement("br"));
+    this.containerDiv.appendChild(this.feedBackDiv);
 };
 
 MultipleChoice.prototype.randomizeAnswers = function () {
@@ -290,11 +285,10 @@ MultipleChoice.prototype.restoreLocalAnswers = function () {         // Handles 
 MultipleChoice.prototype.restoreMultipleSelect = function () {
     // This function repopulates MCMA questions with a user"s previous answers,
     // which were stored into local storage.
-    var _this = this;
     var len = localStorage.length;
     if (len > 0) {
 
-        var ex = localStorage.getItem(eBookConfig.email + ":" + _this.divid);
+        var ex = localStorage.getItem(eBookConfig.email + ":" + this.divid);
         if (ex !== null) {
             var arr = ex.split(";");
             var answers = arr[0].split(",");
@@ -314,12 +308,11 @@ MultipleChoice.prototype.restoreMultipleSelect = function () {
 MultipleChoice.prototype.restoreRadio = function () {
     // This function repopulates a MCMF question with a user"s previous answer,
     // which was previously stored into local storage
-    var _this = this;
     var len = localStorage.length;
 
     // retrieving data from local storage
     if (len > 0) {
-        var ex = localStorage.getItem(eBookConfig.email + ":" + _this.divid);
+        var ex = localStorage.getItem(eBookConfig.email + ":" + this.divid);
         if (ex !== null) {
             var arr = ex.split(";");
             var index = arr[0];
