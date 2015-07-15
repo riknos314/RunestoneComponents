@@ -28,6 +28,7 @@ ClickableArea.prototype.init = function (opts) {
     this.origElem = orig;
     this.divid = orig.id;
 
+    this.clickableArray = [];   // holds all clickable elements
     this.correctArray = [];   // holds the IDs of all correct clickable span elements, used for eval
     this.incorrectArray = [];   // holds IDs of all incorrect clickable span elements, used for eval
 
@@ -99,7 +100,6 @@ ClickableArea.prototype.checkLocalStorage = function () {
 };
 
 ClickableArea.prototype.replaceSpanElements = function () {
-    this.clickableArray = [];
     this.clickIndex = 0;   // Index of this.clickedIndexArray that we're checking against
     this.clickableCounter = 0;  // Index of the current clickable <span>
     for (var i = 0; i < this.newPre.childNodes.length; i++) {
@@ -214,9 +214,3 @@ ClickableArea.prototype.renderFeedback = function () {
 == Find the custom HTML tags and ==
 ==   execute our code on them    ==
 =================================*/
-$(document).ready(function () {
-    $("[data-component=clickablearea]").each(function (index) {
-        CAList[this.id] = new ClickableArea({"orig": this});
-    });
-
-});

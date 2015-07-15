@@ -366,9 +366,3 @@ DragNDrop.prototype.checkLocalStorage = function () {
 == Find the custom HTML tags and ==
 ==   execute our code on them    ==
 =================================*/
-$(document).ready(function () {
-    $("[data-component=dragndrop]").each(function (index) {
-        ddList[this.id] = new DragNDrop({"orig": this});
-    });
-
-});
