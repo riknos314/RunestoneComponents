@@ -534,3 +534,16 @@ MultipleChoice.prototype.compareAnswers = function () {
     data.course = eBookConfig.course;
     jQuery.get(eBookConfig.ajaxURL + "getaggregateresults", data, this.compareModal);
 };
+
+/*=================================
+== Find the custom HTML tags and ==
+==   execute our code on them    ==
+=================================*/
+$(document).ready(function () {
+    $("[data-component=multiplechoice]").each(function (index) {    // MC
+        if ($(this.parentNode).data("component") !== "timedAssessment") { // If this element exists within a timed component, don't render it here
+            mcList[this.id] = new MultipleChoice({"orig": this});
+        }
+    });
+
+});

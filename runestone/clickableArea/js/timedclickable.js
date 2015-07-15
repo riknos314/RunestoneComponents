@@ -33,6 +33,9 @@ TimedClickableArea.prototype.renderTimedIcon = function (component) {
 
 TimedClickableArea.prototype.checkCorrectTimed = function () {
     // Returns if the question was correct.    Used for timed assessment grading.
+    if (this.correctNum === 0 && this.incorrectNum === 0) {
+        this.correct = null;
+    }
     return this.correct;
 };
 

@@ -33,6 +33,10 @@ TimedDragNDrop.prototype.renderTimedIcon = function (component) {
 
 TimedDragNDrop.prototype.checkCorrectTimed = function () {
     // Returns if the question was correct.    Used for timed assessment grading.
+    if (this.unansweredNum === this.dragPairArray.length) {
+        this.correct = null;
+    }
+
     return this.correct;
 };
 
@@ -42,12 +46,9 @@ TimedDragNDrop.prototype.hideFeedback = function () {
 
 TimedDragNDrop.prototype.processTimedSubmission = function () {
     $(this.resetButton).hide();
-    for (var i = 0; i < this.dragPairArray.length; i++) {   // No more dragging
-        if ($(this.dragPairArray[i][0]).attr("draggable") === "true") {
-            $(this.dragPairArray[i][0]).attr("draggable", "false");
-            $(this.dragPairArray[i][0]).css("cursor", "initial")
-        }
-    }
-    console.log(this.dragPairArray);
     this.dragEval();
+    for (var i = 0; i < this.dragPairArray.length; i++) {   // No more dragging
+        $(this.dragPairArray[i][0]).attr("draggable", "false");
+        $(this.dragPairArray[i][0]).css("cursor", "initial");
+    }
 };
