@@ -214,3 +214,10 @@ ClickableArea.prototype.renderFeedback = function () {
 == Find the custom HTML tags and ==
 ==   execute our code on them    ==
 =================================*/
+$(document).ready(function () {
+    $("[data-component=clickablearea]").each(function (index) {
+        if ($(this.parentNode).data("component") !== "timedAssessment") { // If this element exists within a timed component, don't render it here
+            CAList[this.id] = new ClickableArea({"orig": this});
+        }
+    });
+});
