@@ -6,6 +6,8 @@
 	<link rel="stylesheet" href="../bower_components/jquery-ui/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" href="bootstrap.min.css"/>
 	<link rel="stylesheet" href="../css/fitb.css"/>
+	<link rel="stylesheet" href="../../dragndrop/css/dragndrop.css"/>
+	<link rel="stylesheet" href="../../clickableArea/css/clickable.css"/>
 	<script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
 	<script type="text/javascript" src="../bower_components/jquery-ui/jquery-ui.js"></script>
 	<script type="text/javascript" src="../../common/js/runestoneBase.js"></script>
@@ -15,6 +17,10 @@
 	<script type="text/javascript" src="../js/mchoice.js"></script>
 	<script type="text/javascript" src="../js/timedmc.js"></script>
 	<script type="text/javascript" src="../js/timedfitb.js"></script>
+	<script type="text/javascript" src="../../dragndrop/js/dragndrop.js"></script>
+	<script type="text/javascript" src="../../dragndrop/js/timeddnd.js"></script>
+	<script type="text/javascript" src="../../clickableArea/js/clickable.js"></script>
+	<script type="text/javascript" src="../../clickableArea/js/timedclickable.js"></script>
 	<script type="text/javascript" src="../js/timed.js"></script>
 	<script type="text/javascript">
 		eBookConfig = {};
@@ -43,17 +49,31 @@
 			<li data-component="feedback" for="789">Feedback for Three</li>
 		</ul>
 
-		<ul data-component="multiplechoice" id="question_2">
-			The Question can go right here.
-			<li data-component="answer" id="123" >Answer One</li>
-			<li data-component="feedback" for="123">Feedback for One</li>
+		<ul data-component="dragndrop" id="dd1">
+		    <span data-component="question">The Question goes here.</span>
+			<span data-component="feedback">This is feedback that is displayed when this is answered incorrectly.</span>
 
-			<li data-component="answer" id="456">Answer Two</li>
-			<li data-component="feedback" for="456">Feedback for Two</li>
+		    <li data-component="draggable" id="dd1_drag1">Drag to Answer A</li>
+		    <li data-component="dropzone" for="dd1_drag1">Answer A</li>
 
-			<li data-component="answer" id="789" data-correct>Answer Three</li>
-			<li data-component="feedback" for="789">Feedback for Three</li>
+		    <li data-component="draggable" id="dd1_drag2">Drag to Answer B</li>
+		    <li data-component="dropzone" for="dd1_drag2">Answer B</li>
+
+		    <li data-component="draggable" id="dd1_drag3">Drag to Answer C</li>
+		    <li data-component="dropzone" for="dd1_drag3">Answer C</li>
+
+
 		</ul>
+
+		<pre data-component="clickablearea" id="clickable1">
+		<span data-question>Click on all variable assignment statements</span><span data-feedback>Remember, assignment statements usually use "=".</span>def main():
+			<span data-incorrect>print("Hello world")</span>
+			<span data-correct>x = 4</span>
+			for i in range(5):
+				<span data-correct>y = i</span>
+				print(y)
+			<span data-incorrect>return 0</span>
+		</pre>
 
 	<p data-component="fillintheblank" data-casei="false" id="fill1412" >
 
@@ -70,6 +90,31 @@
 
 	        </p>
 	</ul>
+	<ul data-component="dragndrop" id="dd2">
+		<span data-component="question">The Question goes here.</span>
+		<span data-component="feedback">This is feedback that is displayed when this is answered incorrectly.</span>
+
+		<li data-component="draggable" id="dd1_drag1">Drag to Answer A</li>
+		<li data-component="dropzone" for="dd1_drag1">Answer A</li>
+
+		<li data-component="draggable" id="dd1_drag2">Drag to Answer B</li>
+		<li data-component="dropzone" for="dd1_drag2">Answer B</li>
+
+		<li data-component="draggable" id="dd1_drag3">Drag to Answer C</li>
+		<li data-component="dropzone" for="dd1_drag3">Answer C</li>
+
+
+	</ul>
+	<pre data-component="clickablearea" id="clickable2">
+	<span data-question>Click on all print statements</span><span data-feedback>Remember, print statements use "print".</span>def main():
+		<span data-correct>print("Hello world")</span>
+		<span data-incorrect>x = 4</span>
+		for i in range(5):
+			<span data-incorrect>y = i</span>
+			<span data-correct>print(y)</span>
+		<span data-incorrect>return 0</span>
+	</pre>
+
 
 
 </body>
