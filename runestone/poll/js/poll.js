@@ -19,7 +19,13 @@ Poll.prototype.init = function (opts) {
     this.divid = orig.id;
     this.children = this.origElem.childNodes;
     this.optionList = [];
-
+    this.optsArray = [];
+    this.comment = false;
+    if ($(this.origElem).is("[data-comment]")) {
+        this.comment = true;
+    }
+    console.log(this.comment);
+        
     this.getQuestionText();
     this.getOptionText(); //populates optionList
     this.renderPoll();  //generates HTML
@@ -83,8 +89,13 @@ Poll.prototype.renderPoll = function() {
         $(label).attr("for", tmpid);
         $(label).text(this.optionList[i]);
         this.pollForm.appendChild(radio);
+        this.optsArray.push(radio);
         this.pollForm.appendChild(label);
         this.pollForm.appendChild(document.createElement("br"));
+    }
+
+    if (this.comment) {
+        this.renderTextField();
     }
 
     var button = document.createElement("button");
@@ -106,13 +117,40 @@ Poll.prototype.renderPoll = function() {
     $(this.origElem).replaceWith(this.containerDiv);
 };
 
+Poll.prototype.renderTextField = function () {
+    this.textfield = document.createElement("input");
+    this.textfield.type = "text";
+    $(this.textfield).addClass("form-control");
+    this.textfield.style.width = "300px";
+    this.textfield.name = this.divid + "_comment";
+    this.textfield.placeholder = "Any comments?";
+    this.pollForm.appendChild(this.textfield);
+    this.pollForm.appendChild(document.createElement("br"));
+};
+
 Poll.prototype.submitPoll = function() {
     //checks the poll, sets localstorage and submits to the server
-    var poll_val = $(this.pollForm).find("input:radio[name="+this.divid +"_group1]:checked").val();
-    if(poll_val === undefined)
+    var poll_val = null; 
+    for (var i = 0; i < this.optsArray.length; i++) {
+        if (this.optsArray[i].checked) {
+            poll_val = this.optsArray[i].value;
+            break;
+        }
+    }
+    if(poll_val ===  null)
         return;
 
+    var comment_val = "";
+    if (this.comment) {
+        comment_val = this.textfield.value;
+    }
+
     var act = "";
+    if(comment_val !== "") {
+       act = poll_val + ":" + comment_val;
+    } else {
+        act = poll_val;
+    }
 
     var eventInfo = {"event":"poll", "act":act, "div_id":this.divid};
 
