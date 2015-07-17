@@ -1,40 +1,32 @@
-# newactivecode
-
-
-See:  https://github.com/bnmnetp/runestone/wiki/RSE-0001
-
-To try this out quickly use [bower](http://bower.io/#install-bower) to install these dependencies.
-
-    bower install codemirror
-    bower install skulpt
-    bower install jquery
-    bower install jquery-ui
-
-Then load the actest.html file into your browser.  It should look a lot like this:
-
-Now HTML like this:
+### activecode
 
 ```html
-<body>
-<pre data-component="activecode" data-lang="python" id="test1">
-def foo():
-    print 'hello world'
-
-foo()
-</pre>
-
-<pre data-component="activecode" data-lang="python" id="test2" data-include="test1 test2">
-def main():
-    print 'goodbye girl'
-
+<pre data-component="activecode" id="example1" data-lang="python">
+def main()
+    print("hello world")
+    
 main()
-====
-print "This is hidden suffix code you don't see it in the editor"
 </pre>
-
-</body>
 ```
 
-Can create a page that looks like this:
+The body of the ``pre`` tag contains code to be loaded into the editor initially.  The following attributes are options and control what pieces and parts of the component will be visible.
 
-![screenshot](https://www.dropbox.com/s/fqvakeftnfa75gp/Screenshot%202015-03-23%2018.45.58.png?raw=1)
+* ``data-component`` attribute identifies this as an activecode component
+* ``class``  The usual CSS class options
+* ``id`` must be unique in the document
+* ``data-lang`` for activecode can be python javascript or html
+* ``data-autorun`` run this activecode as soon as the page is loaded
+* ``data-hidecode`` make the editor hidden initially
+* ``data-include`` list of ids of other activecodes.  The code form each will be prepended to the code to run
+* ``data-timelimit`` either False to turn off runtime limit checking or an integer representing the number of milliseconds until timeout.
+* ``data-coach``  add a button to display code coach information
+* ``data-codelens`` add a button "Run this in Codelens"
+
+
+For Python to work in the browser you must also obtain and include via a script tag ``skulpt.min.js`` and 
+``skulpt-stdlib.js`` along with ``codemirror.js`` and of course ``activecode.js``
+
+Soon, many of these requirements will be incorporated into one handy ``runestone.js`` file.
+
+
+
