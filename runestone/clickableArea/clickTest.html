@@ -7,8 +7,8 @@
 	<link rel="stylesheet" href="css/clickable.css"/>
 	<script type="text/javascript" src="../assess/bower_components/jquery/dist/jquery.js"></script>
 	<script type="text/javascript" src="../assess/bower_components/jquery-ui/jquery-ui.js"></script>
-	<script type="text/javascript" src="../globalJS/runestoneBase.js"></script>
-	<script type="text/javascript" src="../globalJS/bookfuncs.js"></script>
+	<script type="text/javascript" src="../common/js/runestoneBase.js"></script>
+	<script type="text/javascript" src="../common/js/bookfuncs.js"></script>
 	<script type="text/javascript" src="js/clickable.js"></script>
 	<script type="text/javascript" src="http://www.interactivepython.org/runestone/static/thinkcspy/_static/bootstrap-3.0.0/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
@@ -25,8 +25,10 @@
 </head>
 <body>
 
-<pre data-component="clickablearea" id="clickable1">
-<span data-question>Click on all variable assignment statements</span><span data-feedback>Remember, don't think like an idiot. Or like Kirby.</span>def main():
+<div data-component="clickablearea" id="clickable1">
+<span data-question>Click on all variable assignment statements</span><span data-feedback>Remember, don't think like an idiot. Or like Kirby.</span>
+<pre>
+def main():
 	<span data-incorrect>print("Hello world")</span>
 	<span data-correct>x = 4</span>
 	for i in range(5):
@@ -34,15 +36,20 @@
 		print(y)
 	<span data-incorrect>return 0</span>
 </pre>
+</div>
 
-<pre data-component="clickablearea" id="2342131">
-<span data-question>Hiiii answer me please</span><span data-feedback>Yo. Here's yo feedback yo</span>
-def main():
-<span data-correct>print("Hello")</span>
-x = 5
-<span data-incorrect>for i in range(4)</span>
-<span data-correct>print(i)</span>
-return 0
-</pre>
-
+<div data-component="clickablearea" id="234"><span data-question>Click on the correct stuff.</span><span data-feedback>You suck.</span>
+<table border="1" style="width:100%">
+  <tr>
+    <td data-incorrect>Jill</td>
+    <td data-correct>Smith</td>
+    <td><img src="http://fscomps.fotosearch.com/compc/CSP/CSP650/k20543987.jpg" data-incorrect style="width:42px;height:42px;"></td>
+  </tr>
+  <tr>
+    <td data-incorrect>Eve</td>
+    <td>Jackson</td>
+    <td><img src="http://fscomps.fotosearch.com/compc/CSP/CSP650/k20543987.jpg" data-correct style="width:42px;height:42px;"></td>
+  </tr>
+</table>
+</div>
 </html>
