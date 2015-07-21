@@ -113,7 +113,7 @@ class DragNDrop(Directive):
 
     def run(self):
         """
-            process the multiplechoice directive and generate html for output.
+            process the dragndrop directive and generate html for output.
             :param self:
             :return:
             .. dragndrop:: identifier

@@ -92,7 +92,7 @@ class DataFile(Directive):
 
     def run(self):
         """
-            process the multiplechoice directive and generate html for output.
+            process the datafile directive and generate html for output.
             :param self:
             :return:
             .. datafile:: identifier

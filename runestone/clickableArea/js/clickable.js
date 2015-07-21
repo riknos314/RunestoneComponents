@@ -287,7 +287,8 @@ ClickableArea.prototype.clickableEval = function () {
             $(this.incorrectArray[i]).removeClass("clickable-incorrect");
         }
     }
-
+    var answerInfo = "clicked:" + this.givenIndexArray + ";" + (this.correct ? "correct" : "incorrect");
+    this.logBookEvent({"event": "clickableArea", "act": answerInfo, "div_id": this.divid});
     this.renderFeedback();
 };
 
