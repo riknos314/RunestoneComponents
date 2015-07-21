@@ -245,7 +245,7 @@ FITB.prototype.checkFITBStorage = function () {
     this.evaluateAnswers();
     this.renderFITBFeedback();
     var answerInfo = "answer:" + this.given_arr + ":" + (this.isCorrect ? "correct" : "no");
-    this.logBookEvent({"event": "fillb", "act": answerInfo, "div_id": this.divid});
+    logBookEvent({"event": "fillb", "act": answerInfo, "div_id": this.divid});
     this.enableCompareButton.disabled = false;
 };
 FITB.prototype.evaluateAnswers = function () {
