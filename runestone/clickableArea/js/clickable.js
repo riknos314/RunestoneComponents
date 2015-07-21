@@ -112,7 +112,6 @@ ClickableArea.prototype.checkLocalStorage = function () {
     if (len > 0) {
         var ex = localStorage.getItem(eBookConfig.email + ":" + this.divid + "-given");
         if (ex !== null) {
-            console.log(ex);
             this.hasStoredAnswers = true;
             this.clickedIndexArray = ex.split(";");
         }
@@ -221,12 +220,7 @@ ClickableArea.prototype.manageNewClickable = function (clickable) {
     $(clickable).addClass("clickable");
 
     if (this.hasStoredAnswers) {   // Check if the element we're about to append to the pre was in local storage as clicked via its index
-        console.log(clickable);
-        console.log(this.clickedIndexArray);
-        console.log(this.clickIndex);
-        console.log(this.clickableCounter);
         if (this.clickedIndexArray[this.clickIndex].toString() === this.clickableCounter.toString()) {
-            console.log("here");
             $(clickable).addClass("clickable-clicked");
             this.clickIndex++;
             if (this.clickIndex === this.clickedIndexArray.length) {   // Stop doing this if the index array is used up
@@ -300,10 +294,8 @@ ClickableArea.prototype.clickableEval = function () {
 ClickableArea.prototype.setLocalStorage = function () {
     // Array of the indices of clicked elements is passed to local storage
     this.givenIndexArray = [];
-    console.log(this.clickableArray);
     for (var i = 0; i < this.clickableArray.length; i++) {
         if ($(this.clickableArray[i]).hasClass("clickable-clicked")) {
-            console.log(i);
             this.givenIndexArray.push(i);
         }
     }
