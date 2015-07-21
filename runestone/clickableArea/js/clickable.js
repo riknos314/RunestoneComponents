@@ -112,6 +112,7 @@ ClickableArea.prototype.checkLocalStorage = function () {
     if (len > 0) {
         var ex = localStorage.getItem(eBookConfig.email + ":" + this.divid + "-given");
         if (ex !== null) {
+            console.log(ex);
             this.hasStoredAnswers = true;
             this.clickedIndexArray = ex.split(";");
         }
@@ -143,9 +144,6 @@ ClickableArea.prototype.modifyClickables = function (childNodes) {
                 $(childNodes[i]).removeAttr("data-incorrect");
                 this.incorrectArray.push(childNodes[i]);
             }
-            this.clickableArray.push(childNodes[i]);
-            $(childNodes[i]).replaceWith(childNodes[i]);
-            this.clickableCounter++;
         }
         if (childNodes[i].childNodes.length !== 0) {
             this.modifyClickables(childNodes[i].childNodes);
@@ -168,9 +166,6 @@ ClickableArea.prototype.modifyViaCC = function (children) {
                 this.incorrectArray.push(children[i]);
                 this.ciIndex++;
             }
-            this.clickableArray.push(children[i]);
-            $(children[i]).replaceWith(children[i]);
-            this.clickableCounter++;
         }
     }
 };
@@ -226,10 +221,15 @@ ClickableArea.prototype.manageNewClickable = function (clickable) {
     $(clickable).addClass("clickable");
 
     if (this.hasStoredAnswers) {   // Check if the element we're about to append to the pre was in local storage as clicked via its index
+        console.log(clickable);
+        console.log(this.clickedIndexArray);
+        console.log(this.clickIndex);
+        console.log(this.clickableCounter);
         if (this.clickedIndexArray[this.clickIndex].toString() === this.clickableCounter.toString()) {
+            console.log("here");
             $(clickable).addClass("clickable-clicked");
             this.clickIndex++;
-            if (this.clickIndex === this.clickedIndexArray.length) {   // Stop checking this if the index array is used up
+            if (this.clickIndex === this.clickedIndexArray.length) {   // Stop doing this if the index array is used up
                 this.hasStoredAnswers = false;
             }
         }
@@ -237,10 +237,13 @@ ClickableArea.prototype.manageNewClickable = function (clickable) {
     clickable.onclick = function () {
         if ($(this).hasClass("clickable-clicked")) {
             $(this).removeClass("clickable-clicked");
+            $(this).removeClass("clickable-incorrect");
         } else {
             $(this).addClass("clickable-clicked");
         }
     };
+    this.clickableArray.push(clickable);
+    this.clickableCounter++;
 };
 
 ClickableArea.prototype.createButtons = function () {
@@ -283,8 +286,11 @@ ClickableArea.prototype.clickableEval = function () {
     }
     for (var i = 0; i < this.incorrectArray.length; i++) {
         if ($(this.incorrectArray[i]).hasClass("clickable-clicked")) {
+            $(this.incorrectArray[i]).addClass("clickable-incorrect");
             this.correct = false;
             this.incorrectNum++;
+        } else {
+            $(this.incorrectArray[i]).removeClass("clickable-incorrect");
         }
     }
 
@@ -294,8 +300,10 @@ ClickableArea.prototype.clickableEval = function () {
 ClickableArea.prototype.setLocalStorage = function () {
     // Array of the indices of clicked elements is passed to local storage
     this.givenIndexArray = [];
+    console.log(this.clickableArray);
     for (var i = 0; i < this.clickableArray.length; i++) {
         if ($(this.clickableArray[i]).hasClass("clickable-clicked")) {
+            console.log(i);
             this.givenIndexArray.push(i);
         }
     }
