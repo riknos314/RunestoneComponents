@@ -3,7 +3,7 @@
 }
 
 .clickable-clicked {
-    box-shadow: 0px 0px 2px 2px rgba(0,100,0,0.75)
+    box-shadow: 0px 0px 2px 2px rgba(0,100,0,0.75);
 }
 
 span.clickable-clicked {
@@ -11,6 +11,41 @@ span.clickable-clicked {
     box-shadow: initial;
 }
 
-img.clickable-clicked {
-    box-shadow: 0px 0px 3px 3px rgba(0,100,0,0.75)
+.clickable-clicked td {
+    background-color: #dad6c1;
+    box-shadow: initial;
+}
+
+td.clickable-clicked{
+    background-color: #dad6c1;
+    box-shadow: initial;
+}
+
+.clickable-clicked th {
+    background-color: #dad6c1;
+    box-shadow: initial;
+}
+
+th.clickable-clicked{
+    background-color: #dad6c1;
+    box-shadow: initial;
+}
+
+.clickable-incorrect {
+    border: 1px solid red !important;
+    background-color: #f2dede !important;
+}
+
+.clickable-incorrect th {
+    border: 1px solid red !important;
+    background-color: #f2dede !important;
+}
+
+.clickable-incorrect td {
+    border: 1px solid red !important;
+    background-color: #f2dede !important;
+}
+
+img.clickable-incorrect {
+    box-shadow: 0px 0px 2px 2px rgba(100,0,0,0.75);
 }
