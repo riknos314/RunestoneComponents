@@ -31,7 +31,7 @@
 </head>
 <body>
 <div data-component="clickablearea" id="clickable1">
-<span data-question>Click on all variable assignment statements</span><span data-feedback>Remember, don't think like an idiot. Or like Kirby.</span>
+<span data-question>Click on all variable assignment statements</span><span data-feedback>Remember, variable assignment statements usually involve the operator '='.</span>
 <pre>
 def main():
 	<span data-incorrect>print("Hello world")</span>
@@ -42,61 +42,19 @@ def main():
 	<span data-incorrect>return 0</span>
 </pre>
 </div>
-<div data-component="clickablearea" id="click1" data-cc="1,4" data-ci="2,3">
-<span data-question>Click on all assignment statements.</span><span data-feedback>Remember, the operator '=' is used for assignment.</span>
-<div><div><ul><li>
-<img alt="_images/pp.png" id="1" src="http://www.picgifs.com/clip-art/cartoons/pokemon/clip-art-pokemon-325234.jpg"/>
-<img alt="_images/pp.png" id="2" src="http://www.picgifs.com/clip-art/cartoons/pokemon/clip-art-pokemon-325234.jpg"/>
-<img alt="_images/pp.png" id="3" src="http://www.picgifs.com/clip-art/cartoons/pokemon/clip-art-pokemon-325234.jpg"/>
-<img alt="_images/pp.png" id="4" src="http://www.picgifs.com/clip-art/cartoons/pokemon/clip-art-pokemon-325234.jpg"/>
-</li></ul></div></div>
-</div>
 
-<div data-component="clickablearea" data-table data-cc="1,3;2,0" data-ci="1,1"><span data-question>This is the question.</span>
+<div data-component="clickablearea"><span data-question>This is the question.</span>
 	<table border="1" style="width:100%">
 	  <tr id=test>
-	    <td>Jill</td>
-	    <td>Smith</td>
-	    <td><img src="http://fscomps.fotosearch.com/compc/CSP/CSP650/k20543987.jpg" data-incorrect style="width:42px;height:42px;"></td>
+	    <td data-correct>Table Cell 1</td>
+	    <td>Table Cell 2</td>
+	    <td><img data-incorrect src="http://images/example.jpg"></td>
 	  </tr>
-	  <tr>
-	    <td>Eve</td>
-	    <td>Jackson</td>
-	    <td><img src="http://fscomps.fotosearch.com/compc/CSP/CSP650/k20543987.jpg" data-correct style="width:42px;height:42px;"></td>
+	  <tr data-correct>
+	    <td>Table Cell 4</td>
+	    <td>Table Cell 5</td>
+	    <td>Table Cell 6</td>
 	  </tr>
 	</table>
-</div>
-<div data-component="clickablearea" id="click1" data-table data-cc="1,3;2,2" data-ci="2,1;3,0">
-<span data-question>Click on all assignment statements.</span><span data-feedback>Remember, the operator '=' is used for assignment.</span>
-<table border="1" class="docutils">
-<colgroup>
-<col width="43%" />
-<col width="21%" />
-<col width="18%" />
-<col width="18%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Header row, column 1
-(header rows optional)</th>
-<th class="head">Header 2</th>
-<th class="head">Header 3</th>
-<th class="head">Header 4</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><img alt="_images/pp.png" class="first last" src="_images/pp.png" />
-</td>
-<td>column 2</td>
-<td>column 3</td>
-<td>column 4</td>
-</tr>
-<tr class="row-odd"><td>body row 2</td>
-<td>...</td>
-<td>...</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-
 </div>
 </html>
